@@ -21,6 +21,12 @@
   --white: #f9f9f9;
 }
 
+@property --a {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
 svg {
   position: absolute;
   left: -9999px;
@@ -125,6 +131,21 @@ dialog {
 
 dialog::backdrop {
   background: #00000055
+}
+
+#levels {
+	margin: 1rem 0;
+	display: flex;
+	justify-content: space-evenly;
+  gap: 0.3rem;
+}
+
+#levels .btn {
+	font-size: 1rem;
+	border-width: 0.2rem;
+	aspect-ratio: 1;
+	height: auto;
+	box-shadow: none;
 }
 
 #redo:active, #conf:active {
@@ -638,7 +659,7 @@ section:not(.show) {
 	height: clamp(1vh, 28vw, 15vh);
 	width: clamp(1vh, 28vw, 15vh);
 	border-radius: 200px;
-	background: #00000055;
+  background: var(--bgc, #00000055);
 	margin: 0.3rem;
 	display: flex;
 	align-items: center;
@@ -657,8 +678,22 @@ section:not(.show) {
   --x: -1;
 }
 
+#space3 {
+	position: absolute;
+	top: 0;
+	border: none;
+  z-index: 0;
+  background-color: transparent !important;
+}
+
 #space3.animate {
-  animation: glow 3000ms cubic-bezier(0,1.08,0,.99) forwards;
+	animation:
+    glow 3s cubic-bezier(0,1.08,0,.99) forwards,
+    shine 10s linear infinite;
+	z-index: 1;
+	mask: radial-gradient(white 0%, transparent 70%);
+  --a: 0deg;
+  background-image: repeating-conic-gradient(from var(--a), var(--bgc) 0% 4%, transparent 5% 10%, var(--bgc) 11%);
 }
 
 @keyframes spell {
@@ -689,17 +724,18 @@ section:not(.show) {
   }
 }
 
+@keyframes shine {
+  from {
+    --a: 0deg;
+  }
+  to {
+    --a: 360deg;
+  }
+}
+
 #workarea i {
   height: 4rem;
   aspect-ratio: 1;
-}
-
-#space3 {
-	position: absolute;
-	top: 0;
-	background: transparent;
-	border: none;
-  z-index: 0;
 }
 
 /* MENU */

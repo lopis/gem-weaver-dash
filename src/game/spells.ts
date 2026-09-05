@@ -14,7 +14,6 @@ import {
   CV,
   CW,
   CY,
-  colorBgVar,
   ColorId,
   GemItem,
   GameItem,
@@ -26,8 +25,6 @@ export type SpellKind = 'add' | 'sub';
 export type SpellResult = ColorId;
 
 const SPELL_PHASE_MS = 1000;
-const EMPTY_SPACE_BG = '#00000055';
-const EMPTY_OVERLAY_BG = 'transparent';
 
 let spellPending = false;
 
@@ -142,6 +139,11 @@ const getSpaceItem = (space: HTMLElement): GameItem | undefined => {
 };
 
 const clearSpace = (space: HTMLElement): void => {
+  const token = space.dataset['i'];
+  if (token && isGameItem(token)) {
+    space.classList.remove(token);
+  }
+
   const icon = space.querySelector('i') as HTMLElement | null;
   if (icon) {
     icon.className = '';
@@ -150,29 +152,17 @@ const clearSpace = (space: HTMLElement): void => {
 
   delete space.dataset['i'];
   delete space.dataset['c'];
-
-  if (space === space3) {
-    space.style.background = EMPTY_OVERLAY_BG;
-    space.style.zIndex = '0';
-    return;
-  }
-
-  space.style.background = EMPTY_SPACE_BG;
 };
 
 const setSpaceItem = (space: HTMLElement, item: GameItem, color: ColorId): void => {
   const icon = space.querySelector('i') as HTMLElement | null;
   if (!icon) return;
 
+  space.classList.add(item);
   icon.className = item;
   icon.dataset['i'] = item;
   space.dataset['i'] = item;
   space.dataset['c'] = String(color);
-  space.style.background = colorBgVar[color];
-
-  if (space === space3) {
-    space.style.zIndex = '2';
-  }
 };
 
 const runSpell = (lookup: (left: ColorId, right: ColorId) => SpellResult | undefined): SpellResult | undefined => {
