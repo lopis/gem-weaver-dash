@@ -1,6 +1,6 @@
 import { on } from "@/core/event";
 import { GameEvent } from "./event-manifest";
-import { colorBgVar, colorOfItem, GameItem, isGameItem } from "./game-item";
+import { colorOfItem, GameItem, isGameItem } from "./game-item";
 import { isInteractionLocked } from "./interaction-lock";
 import { addToInventory, removeFromInventory } from "./inventory";
 
@@ -52,13 +52,14 @@ export class Workspace {
       }
 
       if (previous) {
-        addToInventory(previous);
+        addToInventory(previous, false);
+        el.classList.remove(previous);
       }
 
+      el.classList.add(item);
       $i.className = item;
       $i.dataset['i'] = item;
       const color = colorOfItem(item);
-      el.style.background = colorBgVar[color];
       el.dataset['i'] = item;
       el.dataset['c'] = String(color);
 

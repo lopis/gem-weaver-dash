@@ -4,6 +4,14 @@ import { fruits, FruitItem, GameItem, inventoryItems, isFruitItem, isGemItem, ra
 
 const inventoryItemsMap = new Map<GameItem, HTMLElement>();
 
+const animateGain = (item: GameItem) => {
+  const el = inventoryItemsMap.get(item) as HTMLElement;
+  el.classList.remove('gain');
+  // Force restart so repeated gains replay the animation.
+  void el.offsetWidth;
+  el.classList.add('gain');
+};
+
 const hasRainbowSet = () => rainbowGems.every((item) => gameData.inventory.count(item) > 0);
 
 const maybeTriggerVictory = () => {
@@ -68,9 +76,12 @@ export const renderInventory = () => {
   maybeTriggerVictory();
 };
 
-export const addToInventory = (item: GameItem) => {
+export const addToInventory = (item: GameItem, animate = true) => {
   gameData.inventory.add(item);
   renderInventory();
+  if (animate) {
+    animateGain(item);
+  }
 };
 
 export const removeFromInventory = (item: GameItem) => {
@@ -100,7 +111,8 @@ export const collectCaughtItem = (item: GameItem) => {
     staged.remove(item);
     staged.remove(item);
     staged.remove(item);
-    gameData.inventory.add(item);
+    addToInventory(item);
+    return;
   }
 
   renderInventory();

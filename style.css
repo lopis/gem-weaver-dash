@@ -429,6 +429,21 @@ section:not(.show) {
 	padding: 0.4rem;
 }
 
+#inventory i.gain:not(.hide) {
+  animation: inv-gain 250ms ease-out 1;
+}
+
+#inventory.r.animate i.gain:not(.hide) {
+  z-index: 4;
+  box-shadow: 0 0 10px var(--bgc);
+}
+
+@keyframes inv-gain {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.5); }
+  100% { transform: scale(1); }
+}
+
 #inventory i[data-count]::after {
 	content: attr(data-count);
 	position: absolute;
@@ -595,6 +610,7 @@ section:not(.show) {
   background-size: calc(78% + 0.3rem);
   background-repeat: no-repeat;
   transition: height 500ms ease-in-out;
+  z-index: 3;
 }
 
 .r.animate::before {
