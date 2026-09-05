@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sequencer Editor</title>
+  <style>
+    :root {
+      --bg: #f4f2e8;
+      --panel: #fffdf5;
+      --ink: #2f2a1f;
+      --muted: #6a6458;
+      --accent: #1f6d54;
+      --line: #d8d2c2;
+      --error-bg: #ffe9e5;
+      --error-ink: #6e1b0f;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 10% 15%, #e9f0d6 0%, transparent 30%),
+        radial-gradient(circle at 90% 80%, #f7d7b8 0%, transparent 35%),
+        var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      letter-spacing: 0.02em;
+    }
+
+    p {
+      margin: 0 0 16px;
+      color: var(--muted);
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 8px 18px rgba(35, 30, 17, 0.06);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 140px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      padding: 12px;
+      font: 500 0.95rem/1.4 "IBM Plex Mono", "Consolas", monospace;
+      resize: vertical;
+    }
+
+    .meta {
+      margin: 12px 0 2px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 8px 0 2px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    button {
+      border: 1px solid #c4bea9;
+      border-radius: 8px;
+      background: #f7f3e6;
+      color: #3a3427;
+      padding: 6px 10px;
+      font: 600 0.85rem/1 "IBM Plex Sans", "Segoe UI", sans-serif;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .error {
+      margin-top: 12px;
+      padding: 10px 12px;
+      background: var(--error-bg);
+      color: var(--error-ink);
+      border: 1px solid #f7b3a6;
+      border-radius: 10px;
+      display: none;
+    }
+
+    .error.show {
+      display: block;
+    }
+
+    .results {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: start;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+    }
+
+    .instrument {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+      min-width: 240px;
+    }
+
+    .instrument h2 {
+      margin: 0;
+      padding: 8px 10px;
+      font-size: 0.95rem;
+      background: #f0ecdf;
+      border-bottom: 1px solid var(--line);
+      color: var(--accent);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font: 500 0.84rem/1.25 "IBM Plex Mono", "Consolas", monospace;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 6px 8px;
+      border-bottom: 1px solid #efe9d9;
+    }
+
+    tr.note-row {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    tr.note-row:hover td {
+      background: #f8f3e2;
+    }
+
+    tr.note-row.selected td {
+      background: #dcefe4;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <h1>Online Sequencer Note Inspector</h1>
+    <p>Paste a dump with Ctrl+V. Notes are grouped automatically by instrument ID.</p>
+
+    <section class="panel">
+      <textarea id="dumpInput" spellcheck="false" placeholder="Paste data like: Online Sequencer:621481:0 C4 16 41;0.25 D#4 15.75 41;..."></textarea>
+      <div class="meta" id="metaInfo">Waiting for paste...</div>
+      <div class="controls">
+        <button id="copySelectionBtn" type="button" disabled>Copy Selected</button>
+        <span id="selectionInfo">No rows selected.</span>
+      </div>
+      <div class="error" id="errorBox"></div>
+      <div class="results" id="results"></div>
+    </section>
+  </main>
+
+  <script>
+    const inputEl = document.getElementById("dumpInput");
+    const metaInfoEl = document.getElementById("metaInfo");
+    const errorBoxEl = document.getElementById("errorBox");
+    const resultsEl = document.getElementById("results");
+    const copySelectionBtnEl = document.getElementById("copySelectionBtn");
+    const selectionInfoEl = document.getElementById("selectionInfo");
+
+    const selectedRows = new Set();
+    let rowOrder = [];
+    let selectionAnchor = null;
+
+    function setError(message) {
+      errorBoxEl.textContent = message;
+      errorBoxEl.classList.toggle("show", Boolean(message));
+    }
+
+    function clearResults() {
+      resultsEl.textContent = "";
+      selectedRows.clear();
+      rowOrder = [];
+      selectionAnchor = null;
+      updateSelectionUI();
+    }
+
+    function updateSelectionUI() {
+      rowOrder.forEach((row) => {
+        row.classList.toggle("selected", selectedRows.has(row));
+      });
+
+      const selectedCount = selectedRows.size;
+      copySelectionBtnEl.disabled = selectedCount === 0;
+      selectionInfoEl.textContent = selectedCount === 0
+        ? "No rows selected."
+        : selectedCount + " row" + (selectedCount === 1 ? "" : "s") + " selected.";
+    }
+
+    function refreshRowOrder() {
+      rowOrder = [...resultsEl.querySelectorAll("tr.note-row")];
+      updateSelectionUI();
+    }
+
+    function getRowsInSelectionOrder() {
+      return rowOrder.filter((row) => selectedRows.has(row));
+    }
+
+    function getSelectionDumpText() {
+      const rows = getRowsInSelectionOrder();
+      if (!rows.length) {
+        return "";
+      }
+      return rows.map((row) => row.dataset.osCopy).join(";") + ";";
+    }
+
+    function selectRangeTo(targetRow) {
+      if (!selectionAnchor) {
+        selectionAnchor = targetRow;
+        selectedRows.add(targetRow);
+        return;
+      }
+
+      const startIndex = rowOrder.indexOf(selectionAnchor);
+      const endIndex = rowOrder.indexOf(targetRow);
+      if (startIndex < 0 || endIndex < 0) {
+        return;
+      }
+
+      const from = Math.min(startIndex, endIndex);
+      const to = Math.max(startIndex, endIndex);
+      selectedRows.clear();
+      for (let i = from; i <= to; i++) {
+        selectedRows.add(rowOrder[i]);
+      }
+    }
+
+    function parseDump(rawText) {
+      const text = rawText.trim();
+      if (!text) {
+        return { sequenceId: null, notes: [] };
+      }
+
+      const dumpMatch = text.match(/^Online\s+Sequencer:(\d+):(.*)$/s);
+      if (!dumpMatch) {
+        throw new Error("Input must start with 'Online Sequencer:<number>:'");
+      }
+
+      const sequenceId = Number(dumpMatch[1]);
+      const noteBlob = dumpMatch[2].replace(/:\s*$/, "").trim();
+      if (!noteBlob) {
+        return { sequenceId, notes: [] };
+      }
+
+      const rawNotes = noteBlob.split(";").map((n) => n.trim()).filter(Boolean);
+      const notes = rawNotes.map((entry, index) => {
+        const parts = entry.split(/\s+/);
+        if (parts.length < 4) {
+          throw new Error("Invalid note at position " + (index + 1) + ": '" + entry + "'");
+        }
+
+        const start = Number(parts[0]);
+        const pitch = parts[1];
+        const duration = Number(parts[2]);
+        const instrumentId = Number(parts[3]);
+
+        if (Number.isNaN(start) || Number.isNaN(duration) || Number.isNaN(instrumentId)) {
+          throw new Error("Invalid number in note at position " + (index + 1) + ": '" + entry + "'");
+        }
+
+        return { start, pitch, duration, instrumentId };
+      });
+
+      return { sequenceId, notes };
+    }
+
+    function groupByInstrument(notes) {
+      const groups = new Map();
+      notes.forEach((note) => {
+        const key = note.instrumentId;
+        if (!groups.has(key)) {
+          groups.set(key, []);
+        }
+        groups.get(key).push(note);
+      });
+
+      for (const entries of groups.values()) {
+        entries.sort((a, b) => a.start - b.start);
+      }
+
+      return [...groups.entries()];
+    }
+
+    function render(parsed) {
+      clearResults();
+      const groups = groupByInstrument(parsed.notes);
+
+      metaInfoEl.textContent = "Sequence ID: " + (parsed.sequenceId ?? "n/a") + " | Notes: " + parsed.notes.length + " | Instruments: " + groups.length;
+
+      if (!groups.length) {
+        return;
+      }
+
+      const fragment = document.createDocumentFragment();
+
+      groups.forEach(([instrumentId, notes]) => {
+        const block = document.createElement("section");
+        block.className = "instrument";
+
+        const title = document.createElement("h2");
+        title.textContent = String(instrumentId);
+        block.appendChild(title);
+
+        const table = document.createElement("table");
+        table.innerHTML =
+          "<tbody>" +
+          notes
+            .map((note, noteIndex) =>
+              "<tr class=\"note-row\" data-os-copy=\"" + note.start + " " + note.pitch + " " + note.duration +
+              "\"><td>" + (noteIndex + 1) + "</td><td>" + note.start + "</td><td>" + note.pitch + "</td><td>" + note.duration + "</td></tr>"
+            )
+            .join("") +
+          "</tbody>";
+
+        block.appendChild(table);
+        fragment.appendChild(block);
+      });
+
+      resultsEl.appendChild(fragment);
+      refreshRowOrder();
+    }
+
+    function processInput(text) {
+      try {
+        const parsed = parseDump(text);
+        setError("");
+        render(parsed);
+      } catch (error) {
+        clearResults();
+        metaInfoEl.textContent = "Could not parse input.";
+        setError(error instanceof Error ? error.message : String(error));
+      }
+    }
+
+    inputEl.addEventListener("input", () => {
+      processInput(inputEl.value);
+    });
+
+    document.addEventListener("paste", (event) => {
+      const pasted = event.clipboardData ? event.clipboardData.getData("text") : "";
+      if (!pasted) {
+        return;
+      }
+
+      const isInsideInput = event.target === inputEl;
+      if (!isInsideInput) {
+        event.preventDefault();
+        inputEl.value = pasted;
+        processInput(pasted);
+      }
+    });
+
+    resultsEl.addEventListener("click", (event) => {
+      const row = event.target.closest("tr.note-row");
+      if (!row || !resultsEl.contains(row)) {
+        return;
+      }
+
+      if (event.shiftKey) {
+        selectRangeTo(row);
+      } else if (event.ctrlKey || event.metaKey) {
+        if (selectedRows.has(row)) {
+          selectedRows.delete(row);
+        } else {
+          selectedRows.add(row);
+        }
+        selectionAnchor = row;
+      } else {
+        selectedRows.clear();
+        selectedRows.add(row);
+        selectionAnchor = row;
+      }
+
+      updateSelectionUI();
+    });
+
+    copySelectionBtnEl.addEventListener("click", async () => {
+      const text = getSelectionDumpText();
+      if (!text) {
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch {
+        // Clipboard API can fail in some contexts; copy event fallback still works.
+      }
+    });
+
+    document.addEventListener("copy", (event) => {
+      const text = getSelectionDumpText();
+      if (!text) {
+        return;
+      }
+
+      event.preventDefault();
+      if (event.clipboardData) {
+        event.clipboardData.setData("text/plain", text);
+      }
+    });
+  </script>
+</body>
+</html>
