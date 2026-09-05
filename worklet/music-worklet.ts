@@ -10,6 +10,9 @@ const MELODY_RELEASE_PER_BEAT = 1.35;
 
 // each note is [time node duration instrument]
 const melody1 = "0 C4 16;0.25 D#4 15.75;0.5 G4 15.5;0.75 A#4 15.25;16 A#3 16;16.25 D4 15.75;16.5 F4 15.5;16.75 A4 15.25;32 C#4 16;32.25 E4 15.75;32.5 F#4 15.5;32.75 A4 15.25;48 G3 16;48.25 A#3 15.75;48.5 D#4 15.5;48.75 G4 5.25;54 A4 6;60 A#4 4;"
+const beat = "0 F#3 1;0 F2 1;2 F#3 1;4 F#3 1;4 G2 1;6 F#3 1;8 F#3 1;9 E2 1;10 F#3 1;12 F#3 1;12 G2 1;14 F#3 1;";
+const beatDelay = 64;
+const beatGap = 1;
 
 type SignalSource = (sampleIndex: number, inputs: Float32Array[][]) => number;
 
@@ -17,6 +20,12 @@ type MelodyNote = {
   start: number;
   end: number;
   freq: number;
+};
+
+type BeatHit = {
+  start: number;
+  end: number;
+  low: boolean;
 };
 
 const NOTE_OFFSETS: Record<string, number> = {
@@ -69,6 +78,40 @@ function parseMelody(melodyData: string) {
   return { notes, melodyLength };
 }
 
+function parseBeat(beatData: string) {
+  const hits: BeatHit[] = [];
+  let beatLength = 0;
+  const entries = beatData.split(';');
+  for (let i = 0; i < entries.length; i++) {
+    const entry = entries[i].trim();
+    if (!entry) {
+      continue;
+    }
+
+    const parts = entry.split(/\s+/);
+    if (parts.length < 3) {
+      continue;
+    }
+
+    const start = Number(parts[0]);
+    const noteName = parts[1];
+    const duration = Number(parts[2]);
+    if (Number.isNaN(start) || Number.isNaN(duration)) {
+      continue;
+    }
+
+    const octaveMatch = noteName.match(/(-?\d)$/);
+    const octave = octaveMatch ? Number(octaveMatch[1]) : 3;
+    const end = start + duration;
+    hits.push({ start, end, low: octave <= 2 });
+    if (end > beatLength) {
+      beatLength = end;
+    }
+  }
+
+  return { hits, beatLength };
+}
+
 type WorkletPortMessage = number;
 
 class MusicProcessor extends AudioWorkletProcessor {
@@ -101,20 +144,30 @@ class MusicProcessor extends AudioWorkletProcessor {
   beatIncrement = BPM / (60 * sampleRate);
   beatClock = 0;
   melodyGain = 0.22;
+  drumGain = 0.36;
   inputGain = 1;
   sampleClock = 0;
   melodyNotes: MelodyNote[] = [];
   melodyLengthBeats = 0;
+  beatHits: BeatHit[] = [];
+  beatLengthBeats = 0;
   sources: SignalSource[] = [];
+
+  drumLowState = 0;
+  drumHighState = 0;
 
   constructor() {
     super();
     const melody = parseMelody(melody1);
+    const beatTrack = parseBeat(beat);
     this.melodyNotes = melody.notes;
     this.melodyLengthBeats = melody.melodyLength;
+    this.beatHits = beatTrack.hits;
+    this.beatLengthBeats = beatTrack.beatLength;
     this.sources = [
       this.readInputSample.bind(this),
       this.generateMelodySample.bind(this),
+      this.generateBeatSample.bind(this),
       this.generateNoiseSample.bind(this),
     ];
     // Delay buffer size controls echo time (0.32s here).
@@ -184,6 +237,46 @@ class MusicProcessor extends AudioWorkletProcessor {
     }
 
     return sample * this.melodyGain;
+  }
+
+  generateBeatSample() {
+    if (!this.beatHits.length || this.beatLengthBeats <= 0) {
+      return 0;
+    }
+
+    if (this.beatClock < beatDelay) {
+      return 0;
+    }
+
+    const loopLength = this.beatLengthBeats + beatGap;
+    const loopPhase = (this.beatClock - beatDelay) % loopLength;
+    if (loopPhase >= this.beatLengthBeats) {
+      return 0;
+    }
+
+    const beatTime = loopPhase;
+    const noise = Math.random() * 2 - 1;
+    let sample = 0;
+
+    for (let i = 0; i < this.beatHits.length; i++) {
+      const hit = this.beatHits[i];
+      if (beatTime < hit.start || beatTime >= hit.end) {
+        continue;
+      }
+
+      const hitAge = beatTime - hit.start;
+      const env = Math.exp(-hitAge * (hit.low ? 14 : 20));
+
+      if (hit.low) {
+        this.drumLowState += (noise - this.drumLowState) * 0.085;
+        sample += this.drumLowState * env;
+      } else {
+        this.drumHighState += (noise - this.drumHighState) * 0.58;
+        sample += (noise - this.drumHighState) * env * 0.75;
+      }
+    }
+
+    return sample * this.drumGain;
   }
 
   mixSignalSources(sampleIndex: number, inputs: Float32Array[][]) {

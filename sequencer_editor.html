@@ -238,7 +238,16 @@
       if (!rows.length) {
         return "";
       }
-      return rows.map((row) => row.dataset.osCopy).join(";") + ";";
+
+      const firstStart = Number(rows[0].dataset.start || "0");
+      return rows
+        .map((row) => {
+          const start = Number(row.dataset.start || "0");
+          const duration = Number(row.dataset.duration || "0");
+          const normalizedStart = Number((start - firstStart).toFixed(6));
+          return normalizedStart + " " + row.dataset.pitch + " " + duration;
+        })
+        .join(";") + ";";
     }
 
     function selectRangeTo(targetRow) {
@@ -343,7 +352,7 @@
           "<tbody>" +
           notes
             .map((note, noteIndex) =>
-              "<tr class=\"note-row\" data-os-copy=\"" + note.start + " " + note.pitch + " " + note.duration +
+              "<tr class=\"note-row\" data-start=\"" + note.start + "\" data-pitch=\"" + note.pitch + "\" data-duration=\"" + note.duration +
               "\"><td>" + (noteIndex + 1) + "</td><td>" + note.start + "</td><td>" + note.pitch + "</td><td>" + note.duration + "</td></tr>"
             )
             .join("") +

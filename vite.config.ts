@@ -10,6 +10,8 @@ import ect from 'ect-bin';
 import {defaultTerserOptions} from "./terser.config";
 import {execFileSync} from "child_process";
 import htmlMinify from "html-minifier";
+import { minify } from 'terser';
+import { ModuleKind, ScriptTarget, transpile } from 'typescript';
 
 export default defineConfig(({ command, mode }) => {
   const config = {
@@ -21,7 +23,7 @@ export default defineConfig(({ command, mode }) => {
         '@': path.resolve(__dirname, './src'),
       }
     },
-    plugins: [typescriptPlugin()]
+    plugins: [typescriptPlugin(), workletPlugin()]
   };
 
   if (command === 'build') {
@@ -46,7 +48,7 @@ export default defineConfig(({ command, mode }) => {
       terserOptions: defaultTerserOptions,
     };
     // @ts-ignore
-    config.plugins = [typescriptPlugin(), roadrollerPlugin(), ectPlugin()];
+    config.plugins = [typescriptPlugin(), workletPlugin(), roadrollerPlugin(), ectPlugin()];
   }
 
   return config;
@@ -92,6 +94,67 @@ function roadrollerPlugin(): Plugin {
         const minifiedHtml = await htmlMinify.minify(cssInHtml, options);
         return embedJs(minifiedHtml, javascript);
       },
+    },
+  };
+}
+
+/**
+ * Creates the worklet plugin that transpiles and serves the audio worklet.
+ * In build mode it also minifies and emits dist/music-worklet.js.
+ */
+function workletPlugin(): Plugin {
+  return {
+    name: 'vite:worklet',
+    configureServer(server) {
+      return () => {
+        server.middlewares.use(async (req, res, next) => {
+          if (req.originalUrl !== '/music-worklet.js') {
+            next();
+            return;
+          }
+
+          try {
+            const workletPath = path.resolve(__dirname, 'worklet/music-worklet.ts');
+            const workletContent = await fs.readFile(workletPath, 'utf-8');
+            const jsCode = transpile(workletContent, {
+              target: ScriptTarget.ES2022,
+              module: ModuleKind.ES2022,
+              removeComments: false,
+              strict: true,
+            });
+
+            res.setHeader('Content-Type', 'application/javascript');
+            res.setHeader('Cache-Control', 'no-cache');
+            res.end(jsCode);
+          } catch (err) {
+            const message = err instanceof Error ? err.message : String(err);
+            res.statusCode = 500;
+            res.end(`console.error('Worklet compilation failed: ${message}');`);
+          }
+        });
+      };
+    },
+    generateBundle: async (): Promise<void> => {
+      try {
+        const workletPath = path.resolve(__dirname, 'worklet/music-worklet.ts');
+        const workletContent = await fs.readFile(workletPath, 'utf-8');
+        const jsCode = transpile(workletContent, {
+          target: ScriptTarget.ES2022,
+          module: ModuleKind.ES2022,
+          removeComments: true,
+          strict: true,
+        });
+
+        const minified = await minify(jsCode, defaultTerserOptions);
+        if (!minified.code) {
+          throw new Error('Terser minification failed for worklet');
+        }
+
+        await fs.writeFile(path.resolve(__dirname, 'dist/music-worklet.js'), minified.code);
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        console.error('Worklet processing error:', message);
+      }
     },
   };
 }
@@ -157,6 +220,9 @@ function ectPlugin(): Plugin {
       try {
         const files = await fs.readdir('dist/');
         const assetFiles = files.filter(file => {
+          if (file === 'music-worklet.js') {
+            return true;
+          }
           return !file.includes('.js') && !file.includes('.css') && !file.includes('.html') && !file.includes('.zip') && file !== 'assets';
         }).map(file => 'dist/' + file);
         const platformBin = process.platform === 'win32' ? 'win32/ect.exe' : process.platform === 'darwin' ? 'macos/ect' : 'linux/ect';
