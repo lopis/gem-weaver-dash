@@ -8,4 +8,5 @@ export const enum GameEvent {
   SPELL_ADD,
   SPELL_SUB,
   REDO_LEVEL,
+  LEVEL,
 }

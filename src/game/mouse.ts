@@ -2,6 +2,7 @@ import { emit } from "@/core/event"
 import { GameEvent } from "./event-manifest"
 import { isInteractionLocked } from "./interaction-lock";
 import { isGameItem } from "./game-item";
+import { Levels } from "./level-data";
 
 export const initMouse = () => {
   gameGrid.addEventListener('click', (event) => {
@@ -28,6 +29,19 @@ export const initMouse = () => {
   redo.addEventListener('click', () => {
     emit(GameEvent.REDO_LEVEL);
   });
+
+  levels.innerHTML = '';
+  for (let i = 0; i < Levels.length; i++) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'btn';
+    button.textContent = String(i + 1);
+    button.type = 'submit';
+    button.addEventListener('click', () => {
+      emit(GameEvent.LEVEL, i);
+    });
+    levels.appendChild(button);
+  }
 
   space1.addEventListener('click', () => {
     if (isInteractionLocked()) {

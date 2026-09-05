@@ -10,6 +10,7 @@ let fav: HTMLLinkElement;
 // Scenes
 let loading: HTMLElement
 let menu: HTMLElement
+let levels: HTMLElement
 let game: HTMLElement
 let gameGrid: HTMLElement
 let inventory: HTMLElement

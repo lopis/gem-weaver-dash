@@ -55,6 +55,12 @@ export class GameState implements State {
     on(GameEvent.REDO_LEVEL, () => {
       gameStateMachine.setState(new GameState(this.level));
     });
+
+    on(GameEvent.LEVEL, (levelIndex: number) => {
+      if (levelIndex >= 0 && levelIndex < Levels.length) {
+        gameStateMachine.setState(new GameState(levelIndex));
+      }
+    });
   }
 
   onLeave() {
