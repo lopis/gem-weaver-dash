@@ -152,71 +152,67 @@ class MpProcessor extends AudioWorkletProcessor {
     return sum * this.inputGain;
   }
 
-  generateMelodySample(songTimeSec: number, beat: number) {
-    if (!this.melodyNotes.length || this.melodyLengthBeats <= 0) {
+  renderTrack(songTimeSec: number, beat: number, isDrum: boolean) {
+    const notes = isDrum ? this.beatHits : this.melodyNotes;
+    const length = isDrum ? this.beatLengthBeats : this.melodyLengthBeats;
+    if (!notes.length || length <= 0) {
       return 0;
     }
 
+    let phase = 0;
+    let tail = 0;
+    let gain = this.melodyGain;
+    if (isDrum) {
+      if (beat < BEAT_DELAY) {
+        return 0;
+      }
+      const loopLength = length + BEAT_GAP;
+      phase = (beat - BEAT_DELAY) % loopLength;
+      if (phase >= length) {
+        return 0;
+      }
+      gain = this.drumGain;
+    } else {
+      phase = beat % length;
+      tail = PIANO_RELEASE_TAIL_BEATS;
+    }
+
+    const noise = isDrum ? Math.random() * 2 - 1 : 0;
     let sample = 0;
-    const melodyBeat = beat % this.melodyLengthBeats;
-    for (let i = 0; i < this.melodyNotes.length; i += 3) {
-      const start = this.melodyNotes[i];
-      const end = this.melodyNotes[i + 1];
-      if (melodyBeat < start || melodyBeat >= end + PIANO_RELEASE_TAIL_BEATS) {
+    for (let i = 0; i < notes.length; i += 3) {
+      const start = notes[i];
+      const end = notes[i + 1];
+      if (phase < start || phase >= end + tail) {
         continue;
       }
 
-      const noteAgeBeats = melodyBeat - start;
-      const noteAgeSamples = noteAgeBeats / this.beatIncrement;
-      const vibrato = Math.sin(noteAgeSamples * PIANO_VIBRATO_RATE) * PIANO_VIBRATO_DEPTH;
-      const attack = Math.min(1, noteAgeSamples * PIANO_ATTACK_PER_SAMPLE);
-      const decay = Math.exp(-noteAgeSamples * PIANO_DECAY_PER_SAMPLE);
-      let release = 1;
-      if (melodyBeat > end) {
-        const releaseSamples = (melodyBeat - end) / this.beatIncrement;
-        release = Math.exp(-releaseSamples * PIANO_RELEASE_PER_SAMPLE);
-      }
-      const env = attack * decay * release;
-      sample += Math.sin(songTimeSec * this.melodyNotes[i + 2] * TAU + vibrato) * env;
-    }
-
-    return sample * this.melodyGain;
-  }
-
-  generateBeatSample(beat: number) {
-    if (!this.beatHits.length || this.beatLengthBeats <= 0 || beat < BEAT_DELAY) {
-      return 0;
-    }
-
-    const loopLength = this.beatLengthBeats + BEAT_GAP;
-    const loopPhase = (beat - BEAT_DELAY) % loopLength;
-    if (loopPhase >= this.beatLengthBeats) {
-      return 0;
-    }
-
-    const noise = Math.random() * 2 - 1;
-    let sample = 0;
-    for (let i = 0; i < this.beatHits.length; i += 3) {
-      const start = this.beatHits[i];
-      const end = this.beatHits[i + 1];
-      if (loopPhase < start || loopPhase >= end) {
-        continue;
-      }
-
-      const isLow = this.beatHits[i + 2] > 0.5;
-      const age = loopPhase - start;
-      const env = Math.exp(-age * (isLow ? 14 : 20));
-
-      if (isLow) {
-        this.drumLowState += (noise - this.drumLowState) * 0.085;
-        sample += this.drumLowState * env;
+      const value = notes[i + 2];
+      const age = phase - start;
+      if (isDrum) {
+        const isLow = value > 0.5;
+        const env = Math.exp(-age * (isLow ? 14 : 20));
+        if (isLow) {
+          this.drumLowState += (noise - this.drumLowState) * 0.085;
+          sample += this.drumLowState * env;
+        } else {
+          this.drumHighState += (noise - this.drumHighState) * 0.58;
+          sample += (noise - this.drumHighState) * env * 0.75;
+        }
       } else {
-        this.drumHighState += (noise - this.drumHighState) * 0.58;
-        sample += (noise - this.drumHighState) * env * 0.75;
+        const ageSamples = age / this.beatIncrement;
+        const vibrato = Math.sin(ageSamples * PIANO_VIBRATO_RATE) * PIANO_VIBRATO_DEPTH;
+        const attack = Math.min(1, ageSamples * PIANO_ATTACK_PER_SAMPLE);
+        const decay = Math.exp(-ageSamples * PIANO_DECAY_PER_SAMPLE);
+        let release = 1;
+        if (phase > end) {
+          const releaseSamples = (phase - end) / this.beatIncrement;
+          release = Math.exp(-releaseSamples * PIANO_RELEASE_PER_SAMPLE);
+        }
+        sample += Math.sin(songTimeSec * value * TAU + vibrato) * attack * decay * release;
       }
     }
 
-    return sample * this.drumGain;
+    return sample * gain;
   }
 
   generateNoiseSample() {
@@ -256,8 +252,8 @@ class MpProcessor extends AudioWorkletProcessor {
 
       const mixed =
         this.readInputSample(i, inputs) +
-        this.generateMelodySample(songTimeSec, beat) +
-        this.generateBeatSample(beat) +
+        this.renderTrack(songTimeSec, beat, false) +
+        this.renderTrack(songTimeSec, beat, true) +
         this.generateNoiseSample();
 
       outputBuffer[i] = Math.max(-1, Math.min(1, mixed * this.masterGain));
