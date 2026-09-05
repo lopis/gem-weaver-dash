@@ -1,4 +1,5 @@
 # Project exclude paths
 /dist/*
 !/dist/index.html
+!/dist/music-worklet.js
 /node_modules/
