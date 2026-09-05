@@ -188,6 +188,17 @@
   </main>
 
   <script>
+    const PPQ = 4;
+    const NOTE_OFFSETS = {
+      C: 0,
+      D: 2,
+      E: 4,
+      F: 5,
+      G: 7,
+      A: 9,
+      B: 11,
+    };
+
     const inputEl = document.getElementById("dumpInput");
     const metaInfoEl = document.getElementById("metaInfo");
     const errorBoxEl = document.getElementById("errorBox");
@@ -233,6 +244,15 @@
       return rowOrder.filter((row) => selectedRows.has(row));
     }
 
+    function noteToMidi(noteName) {
+      const match = noteName.match(/^([A-G])(#?)(-?\d)$/);
+      if (!match) {
+        return null;
+      }
+      const octave = Number(match[3]);
+      return (octave + 1) * 12 + NOTE_OFFSETS[match[1]] + (match[2] ? 1 : 0);
+    }
+
     function getSelectionDumpText() {
       const rows = getRowsInSelectionOrder();
       if (!rows.length) {
@@ -240,14 +260,24 @@
       }
 
       const firstStart = Number(rows[0].dataset.start || "0");
+      let previousTicks = 0;
       return rows
         .map((row) => {
           const start = Number(row.dataset.start || "0");
           const duration = Number(row.dataset.duration || "0");
-          const normalizedStart = Number((start - firstStart).toFixed(6));
-          return normalizedStart + " " + row.dataset.pitch + " " + duration;
+          const midi = noteToMidi(row.dataset.pitch || "");
+          if (midi === null) {
+            throw new Error("Unsupported note format: " + (row.dataset.pitch || ""));
+          }
+
+          const normalizedStart = start - firstStart;
+          const startTicks = Math.round(normalizedStart * PPQ);
+          const durationTicks = Math.max(1, Math.round(duration * PPQ));
+          const deltaTicks = startTicks - previousTicks;
+          previousTicks = startTicks;
+          return deltaTicks.toString(36) + "." + midi.toString(36) + "." + durationTicks.toString(36);
         })
-        .join(";") + ";";
+        .join(",");
     }
 
     function selectRangeTo(targetRow) {
@@ -421,7 +451,13 @@
     });
 
     copySelectionBtnEl.addEventListener("click", async () => {
-      const text = getSelectionDumpText();
+      let text = "";
+      try {
+        text = getSelectionDumpText();
+      } catch (error) {
+        setError(error instanceof Error ? error.message : String(error));
+        return;
+      }
       if (!text) {
         return;
       }
@@ -434,7 +470,13 @@
     });
 
     document.addEventListener("copy", (event) => {
-      const text = getSelectionDumpText();
+      let text = "";
+      try {
+        text = getSelectionDumpText();
+      } catch (error) {
+        setError(error instanceof Error ? error.message : String(error));
+        return;
+      }
       if (!text) {
         return;
       }
