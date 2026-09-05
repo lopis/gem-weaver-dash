@@ -46,7 +46,7 @@
         )
       </script>
     </div> -->
-    <svg id="ms" aria-hidden="true" focusable="false">
+    <svg id="ms" focusable="false">
       <path id="mp" d=""></path>
     </svg>
     <main>
@@ -60,6 +60,7 @@
           <span sketch>DASH</span><br>
         </h1>
         <button id="newGame" class="btn" sketch>NEW GAME</button>
+        <button id="newGame" class="btn" commandfor="confDialog" command="show-modal" sketch>OPTIONS</button>
       </section>
       <section id="game">
         <div id="stats">
@@ -67,7 +68,7 @@
           <span id="d" sketch>0</span>
           <nav>
             <span id="redo" sketch>Q</span>
-            <button id="conf" type="button" sketch commandfor="confDialog" command="show-modal" aria-label="Open settings">?</button>
+            <button id="conf" type="button" sketch commandfor="confDialog" command="show-modal">?</button>
           </nav>
           <span sketch>SPELL</span>
           <span id="s" sketch>0</span>

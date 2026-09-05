@@ -57,9 +57,7 @@ export class GameState implements State {
     });
 
     on(GameEvent.LEVEL, (levelIndex: number) => {
-      if (levelIndex >= 0 && levelIndex < Levels.length) {
-        gameStateMachine.setState(new GameState(levelIndex));
-      }
+      gameStateMachine.setState(new GameState(levelIndex));
     });
   }
 

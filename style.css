@@ -759,6 +759,7 @@ section:not(.show) {
 #menu {
   align-items: center;
   padding-bottom: 20rem;
+  gap: 1rem;
 }
 
 .btn {
