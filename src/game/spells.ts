@@ -1,6 +1,6 @@
 import { on } from "@/core/event";
 import { addTimeEvent } from "@/core/timer";
-import { GameEvent } from "./event-manifest";
+import { GAME_EVENT_SPELL_ADD, GAME_EVENT_SPELL_SUB } from "./event-manifest";
 import { addToInventory } from "./inventory";
 import { addSpell } from "./game-data";
 import { isInteractionLocked, lockInteractions, unlockInteractions } from "./interaction-lock";
@@ -215,8 +215,8 @@ const spellSub = () => runSpell(lookupSub);
 
 
 export const initSpellListener = (): void => {
-  on(GameEvent.SPELL_ADD, spellAdd);
-  on(GameEvent.SPELL_SUB, spellSub);
+  on(GAME_EVENT_SPELL_ADD, spellAdd);
+  on(GAME_EVENT_SPELL_SUB, spellSub);
 };
 
 

@@ -11,7 +11,15 @@ import { lockInteractions } from '@/game/interaction-lock';
 import { Workspace } from '@/game/workspace';
 import { Levels } from '@/game/level-data';
 import { gameStateMachine } from '@/game-state-machine';
-import { GameEvent } from '@/game/event-manifest';
+import {
+  GAME_EVENT_LEVEL,
+  GAME_EVENT_PAUSE,
+  GAME_EVENT_REDO_LEVEL,
+  GAME_EVENT_SPELL_ADD,
+  GAME_EVENT_SPELL_SUB,
+  GAME_EVENT_UNPAUSE,
+} from '@/game/event-manifest';
+import musicPlayer from '@/core/music-player';
 
 export class GameState implements State {
   grid!: GameGrid;
@@ -40,25 +48,28 @@ export class GameState implements State {
     this.hideAllHelpTexts();
     addTimeEvent(() => this.initHelpTexts(), 0, 0, 500);
 
-    on(GameEvent.SPELL_ADD, () => {
+    on(GAME_EVENT_SPELL_ADD, () => {
       if (this.level === 1 && this.help6Shown) {
         this.setHelpVisible(6, false);
       }
     });
 
-    on(GameEvent.SPELL_SUB, () => {
+    on(GAME_EVENT_SPELL_SUB, () => {
       if (this.level === 1 && this.help6Shown) {
         this.setHelpVisible(6, false);
       }
     });
 
-    on(GameEvent.REDO_LEVEL, () => {
+    on(GAME_EVENT_REDO_LEVEL, () => {
       gameStateMachine.setState(new GameState(this.level));
     });
 
-    on(GameEvent.LEVEL, (levelIndex: number) => {
+    on(GAME_EVENT_LEVEL, (levelIndex: number) => {
       gameStateMachine.setState(new GameState(levelIndex));
     });
+
+    on(GAME_EVENT_PAUSE, () => musicPlayer.pause());
+    on(GAME_EVENT_UNPAUSE, () => musicPlayer.unpause());
   }
 
   onLeave() {

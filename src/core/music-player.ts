@@ -10,10 +10,9 @@ class MusicPlayer {
 
     this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     await this.audioContext.resume();
-    await this.audioContext.audioWorklet.addModule('music-worklet.js');
+    await this.audioContext.audioWorklet.addModule('/worklet/music-worklet.ts');
 
     this.musicProcessorNode = new AudioWorkletNode(this.audioContext, 'mp');
-    
     this.musicProcessorNode.connect(this.audioContext.destination);
     this.isPlaying = true;
   }

@@ -1,5 +1,13 @@
 import { emit } from "@/core/event"
-import { GameEvent } from "./event-manifest"
+import {
+  GAME_EVENT_GRID_CLICK,
+  GAME_EVENT_INVENTORY_CLICK,
+  GAME_EVENT_LEVEL,
+  GAME_EVENT_REDO_LEVEL,
+  GAME_EVENT_SPELL_ADD,
+  GAME_EVENT_SPELL_SUB,
+  GAME_EVENT_WORKSPACE_SPACE_CLICK,
+} from "./event-manifest"
 import { isInteractionLocked } from "./interaction-lock";
 import { isGameItem } from "./game-item";
 import { Levels } from "./level-data";
@@ -9,25 +17,25 @@ export const initMouse = () => {
     if (isInteractionLocked()) {
       return;
     }
-    emit(GameEvent.GRID_CLICK, { x: event.clientX, y: event.clientY});
+    emit(GAME_EVENT_GRID_CLICK, { x: event.clientX, y: event.clientY});
   });
 
   add.addEventListener('click', () => {
     if (isInteractionLocked()) {
       return;
     }
-    emit(GameEvent.SPELL_ADD);
+    emit(GAME_EVENT_SPELL_ADD);
   });
 
   sub.addEventListener('click', () => {
     if (isInteractionLocked()) {
       return;
     }
-    emit(GameEvent.SPELL_SUB);
+    emit(GAME_EVENT_SPELL_SUB);
   });
 
   redo.addEventListener('click', () => {
-    emit(GameEvent.REDO_LEVEL);
+    emit(GAME_EVENT_REDO_LEVEL);
   });
 
   levels.innerHTML = '';
@@ -38,7 +46,7 @@ export const initMouse = () => {
     button.textContent = String(i + 1);
     button.type = 'submit';
     button.addEventListener('click', () => {
-      emit(GameEvent.LEVEL, i);
+      emit(GAME_EVENT_LEVEL, i);
     });
     levels.appendChild(button);
   }
@@ -47,14 +55,14 @@ export const initMouse = () => {
     if (isInteractionLocked()) {
       return;
     }
-    emit(GameEvent.WORKSPACE_SPACE_CLICK, { el: space1 });
+    emit(GAME_EVENT_WORKSPACE_SPACE_CLICK, { el: space1 });
   });
 
   space2.addEventListener('click', () => {
     if (isInteractionLocked()) {
       return;
     }
-    emit(GameEvent.WORKSPACE_SPACE_CLICK, { el: space2 });
+    emit(GAME_EVENT_WORKSPACE_SPACE_CLICK, { el: space2 });
   });
 
   document.body.classList.toggle('stop', toggleImageAnim.checked);
@@ -75,7 +83,7 @@ export const initMouse = () => {
         return;
       }
 
-      emit(GameEvent.INVENTORY_CLICK, { item, el });
+      emit(GAME_EVENT_INVENTORY_CLICK, { item, el });
     });
   }
 }

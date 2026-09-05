@@ -1,5 +1,5 @@
 import { on } from "@/core/event";
-import { GameEvent } from "./event-manifest";
+import { GAME_EVENT_INVENTORY_CLICK, GAME_EVENT_WORKSPACE_SPACE_CLICK } from "./event-manifest";
 import { colorOfItem, GameItem, isGameItem } from "./game-item";
 import { isInteractionLocked } from "./interaction-lock";
 import { addToInventory, removeFromInventory } from "./inventory";
@@ -8,7 +8,7 @@ export class Workspace {
   selectedItem: GameItem | null = null;
 
   constructor() {
-    on(GameEvent.INVENTORY_CLICK, ({ item, el }: { item: GameItem, el: HTMLElement }) => {
+    on(GAME_EVENT_INVENTORY_CLICK, ({ item, el }: { item: GameItem, el: HTMLElement }) => {
       if (isInteractionLocked()) {
         return;
       }
@@ -28,7 +28,7 @@ export class Workspace {
       this.selectedItem = null;
     });
 
-    on(GameEvent.WORKSPACE_SPACE_CLICK, ({ el }: { el: HTMLElement }) => {
+    on(GAME_EVENT_WORKSPACE_SPACE_CLICK, ({ el }: { el: HTMLElement }) => {
       if (isInteractionLocked()) {
         return;
       }

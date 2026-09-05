@@ -8,7 +8,7 @@ import { Trail } from "./trail";
 import { spawnHighlight } from "./highlight";
 import { spawnObstacleDeathFx } from "./death-effects";
 import { on } from "@/core/event";
-import { GameEvent } from "./event-manifest";
+import { GAME_EVENT_GRID_CLICK } from "./event-manifest";
 import { isInteractionLocked, lockInteractions } from "./interaction-lock";
 import { DecodedLevel } from "./level-data";
 import { GRID_COLS, GRID_ROWS } from "./constants";
@@ -48,7 +48,7 @@ export class GameGrid {
 
     this.placeUnicorn(player.pos.x, player.pos.y);
 
-    on(GameEvent.GRID_CLICK, (pos) => this.moveUnicorn(pos))
+    on(GAME_EVENT_GRID_CLICK, (pos) => this.moveUnicorn(pos))
   }
 
   private placeAtGridCell(element: HTMLElement, x: number, y: number) {

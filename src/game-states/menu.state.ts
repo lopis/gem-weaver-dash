@@ -2,8 +2,13 @@ import { State } from '@/core/state';
 import { gameStateMachine } from '@/game-state-machine';
 import { GameState } from './game.state';
 import { on } from '@/core/event';
-import { GameEvent } from '@/game/event-manifest';
-import { Levels } from '@/game/level-data';
+import { GAME_EVENT_LEVEL } from '@/game/event-manifest';
+import musicPlayer from '@/core/music-player';
+
+const setLevel = (level: number) => {
+  gameStateMachine.setState(new GameState(level));
+  musicPlayer.start();
+}
 
 
 class MenuState implements State {
@@ -11,8 +16,8 @@ class MenuState implements State {
     menu.classList.toggle('show', true);
     newGame.addEventListener('click', this.startGame)
 
-    on(GameEvent.LEVEL, (levelIndex: number) => {
-      gameStateMachine.setState(new GameState(levelIndex));
+    on(GAME_EVENT_LEVEL, (levelIndex: number) => {
+      setLevel(levelIndex);
     });
   }
 
@@ -26,7 +31,7 @@ class MenuState implements State {
   }
 
   startGame () {
-    gameStateMachine.setState(new GameState(0));
+    setLevel(0);
   }
 }
 

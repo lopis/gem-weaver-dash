@@ -1,12 +1,9 @@
-export const enum GameEvent {
-  // PAUSE,
-  // UNPAUSE,
-
-  GRID_CLICK,
-  INVENTORY_CLICK,
-  WORKSPACE_SPACE_CLICK,
-  SPELL_ADD,
-  SPELL_SUB,
-  REDO_LEVEL,
-  LEVEL,
-}
+export const GAME_EVENT_PAUSE = 0;
+export const GAME_EVENT_UNPAUSE = 1;
+export const GAME_EVENT_GRID_CLICK = 2;
+export const GAME_EVENT_INVENTORY_CLICK = 3;
+export const GAME_EVENT_WORKSPACE_SPACE_CLICK = 4;
+export const GAME_EVENT_SPELL_ADD = 5;
+export const GAME_EVENT_SPELL_SUB = 6;
+export const GAME_EVENT_REDO_LEVEL = 7;
+export const GAME_EVENT_LEVEL = 8;

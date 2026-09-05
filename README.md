@@ -45,3 +45,7 @@ Possible ideas for achievements, if we get to that stage...
 * Ouch - Die in the spikes
 * Spash - Drown in the water
 * Hoarder - have 3 of a kind of gem
+
+## TODO
+
+* Turn text rendering from background image based to masks
