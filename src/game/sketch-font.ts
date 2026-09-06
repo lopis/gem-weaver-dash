@@ -1,4 +1,4 @@
-import { colors } from "./colors";
+import { black } from "./colors";
 import { drawSketchStroke, samplePathData, SamplePoint } from "./sketch-path";
 
 type Glyph = {
@@ -125,7 +125,7 @@ const buildGlyphAsset = (glyph: Glyph): GlyphAsset => {
     ctx.scale(unitScale, unitScale);
 
     for (let pass = 0; pass < STROKE_PASSES; pass++) {
-      drawSketchStroke(ctx, glyph.samples, frame, pass, colors.black, STROKE_WIDTH, STROKE_AMP, false);
+      drawSketchStroke(ctx, glyph.samples, frame, pass, black, STROKE_WIDTH, STROKE_AMP, false);
     }
 
     ctx.restore();
@@ -241,7 +241,7 @@ export const drawSketchText = (
     targetCtx.save();
     targetCtx.translate(cursorX / scale - glyph.minX, 0);
     for (let pass = 0; pass < STROKE_PASSES; pass++) {
-      drawSketchStroke(targetCtx, glyph.samples, frame, pass, colors.black, STROKE_WIDTH, STROKE_AMP, false);
+      drawSketchStroke(targetCtx, glyph.samples, frame, pass, black, STROKE_WIDTH, STROKE_AMP, false);
     }
     targetCtx.restore();
 

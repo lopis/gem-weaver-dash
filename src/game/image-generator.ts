@@ -1,13 +1,13 @@
 import { createCanvasWithCtx } from '../core/util/canvas';
-import { Color, colors } from './colors';
+import { blue2, Color, cyan, cyan2, green, green2, magenta2, magenta3, red2, white, yellow, yellow2 } from './colors';
 
 export let rainbowSprite: HTMLCanvasElement, bushSprite: HTMLCanvasElement;
 
 const BUSH_SMOKE = {
   size: 96,
   frames: 12,
-  fill: colors.white,
-  border: colors.magenta3,
+  fill: white,
+  border: magenta3,
   borderPx: 4,
   drawThreshold: 0.2,
   center: { x: 0.5, y: 0.52 },
@@ -130,7 +130,7 @@ const createBushSmokeSpriteSheet = (): HTMLCanvasElement => {
 
 export const init = (): void => {
   const [canvas, ctx] = createCanvasWithCtx(128, 128);
-  const rainbow = [colors.yellow, colors.green, colors.cyan, colors.magenta2];
+  const rainbow = [yellow, green, cyan, magenta2];
   const r = 22;
   const step = r * 2 - 14;
   const startX = (128 - (r * 2 + step * (rainbow.length - 1))) / 2 + r;
@@ -204,8 +204,8 @@ const createSpellIcon = (
 };
 
 export const applySpellIcons = () => {
-  const additiveIcon = createSpellIcon([colors.red2, colors.green2, colors.blue2], 'lighter', 'plus');
-  const subtractiveIcon = createSpellIcon([colors.cyan2, colors.magenta2, colors.yellow2], 'multiply', 'minus');
+  const additiveIcon = createSpellIcon([red2, green2, blue2], 'lighter', 'plus');
+  const subtractiveIcon = createSpellIcon([cyan2, magenta2, yellow2], 'multiply', 'minus');
 
   add.style.backgroundImage = `url(${additiveIcon})`;
   sub.style.backgroundImage = `url(${subtractiveIcon})`;
