@@ -40,14 +40,14 @@ export const renderInventory = () => {
 
     const total = gameData.inventory.count(item);
     if (total > 0) {
-      el.classList.remove('hide');
+      el.removeAttribute('h');
       if (total > 1) {
         el.dataset['count'] = String(total);
       } else {
         delete el.dataset['count'];
       }
     } else {
-      el.classList.add('hide');
+      el.setAttribute('h', '');
       el.classList.remove('selected');
       delete el.dataset['count'];
     }

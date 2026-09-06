@@ -139,7 +139,7 @@ const getSpaceItem = (space: HTMLElement): GameItem | undefined => {
 };
 
 const clearSpace = (space: HTMLElement): void => {
-  const token = space.dataset['i'];
+  const token = getSpaceItem(space);
   if (token && isGameItem(token)) {
     space.classList.remove(token);
   }
@@ -147,7 +147,6 @@ const clearSpace = (space: HTMLElement): void => {
   const icon = space.querySelector('i') as HTMLElement | null;
   if (icon) {
     icon.className = '';
-    delete icon.dataset['i'];
   }
 
   delete space.dataset['i'];
@@ -160,7 +159,6 @@ const setSpaceItem = (space: HTMLElement, item: GameItem, color: ColorId): void 
 
   space.classList.add(item);
   icon.className = item;
-  icon.dataset['i'] = item;
   space.dataset['i'] = item;
   space.dataset['c'] = String(color);
 };

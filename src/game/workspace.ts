@@ -3,7 +3,6 @@ import { GAME_EVENT_INVENTORY_CLICK, GAME_EVENT_WORKSPACE_SPACE_CLICK } from "./
 import { colorOfItem, GameItem, isGameItem } from "./game-item";
 import { isInteractionLocked } from "./interaction-lock";
 import { addToInventory, removeFromInventory } from "./inventory";
-
 export class Workspace {
   selectedItem: GameItem | null = null;
 
@@ -43,7 +42,7 @@ export class Workspace {
         return;
       }
 
-      const prevToken = $i.dataset['i'];
+      const prevToken = el.dataset['i'];
       const previous = prevToken && isGameItem(prevToken) ? prevToken : undefined;
 
       const removed = removeFromInventory(item);
@@ -58,7 +57,6 @@ export class Workspace {
 
       el.classList.add(item);
       $i.className = item;
-      $i.dataset['i'] = item;
       const color = colorOfItem(item);
       el.dataset['i'] = item;
       el.dataset['c'] = String(color);

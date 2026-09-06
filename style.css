@@ -415,25 +415,25 @@ section:not(.show) {
 	box-sizing: border-box;
 }
 
-#inventory i.hide {
+#inventory i[h] {
   border-color: var(--magenta4);
   box-shadow: 5px 5px 0 0 var(--magenta5), -1px -1px 0 0 var(--magenta2);
 	background-color: var(--magenta4);
   background-size: 0;
 }
 
-#inventory i.selected:not(.hide) {
+#inventory i.selected:not([h]) {
 	box-shadow: 0 0 0 5px var(--white);
 	transform: scale(1.1);
 	border: 0.1rem solid var(--bgc);
 	padding: 0.4rem;
 }
 
-#inventory i.gain:not(.hide) {
+#inventory i.gain:not([h]) {
   animation: inv-gain 250ms ease-out 1;
 }
 
-#inventory.r.animate i.gain:not(.hide) {
+#inventory.r.animate i.gain:not([h]) {
   z-index: 4;
   box-shadow: 0 0 10px var(--bgc);
 }
