@@ -13,7 +13,7 @@ import { isGameItem } from "./game-item";
 import { Levels } from "./level-data";
 
 export const initMouse = () => {
-  grid.addEventListener('click', (event) => {
+  gd.addEventListener('click', (event) => {
     if (isInteractionLocked()) {
       return;
     }
@@ -38,7 +38,7 @@ export const initMouse = () => {
     emit(GAME_EVENT_REDO_LEVEL);
   });
 
-  levels.innerHTML = '';
+  lv.innerHTML = '';
   for (let i = 0; i < Levels.length; i++) {
     const button = document.createElement('button');
     button.type = 'button';
@@ -48,7 +48,7 @@ export const initMouse = () => {
     button.addEventListener('click', () => {
       emit(GAME_EVENT_LEVEL, i);
     });
-    levels.appendChild(button);
+    lv.appendChild(button);
   }
 
   s1.addEventListener('click', () => {

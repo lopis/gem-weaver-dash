@@ -29,8 +29,8 @@ export class Unicorn {
     this.facingRight = x <= 5;
     this.moveTime = this.moveDuration;
     this.moving = false;
-    unicorn.classList.remove('dead-bush');
-    unicorn.classList.remove('dead');
+    u.classList.remove('dead-bush');
+    u.classList.remove('dead');
   }
 
   moveTo(x: number, y: number) {
@@ -59,7 +59,7 @@ export class Unicorn {
     this.moveTime = this.moveDuration;
     this.moving = false;
     this.dead = true;
-    unicorn.classList.add('dead');
+    u.classList.add('dead');
   }
 
   update(delta: number) {

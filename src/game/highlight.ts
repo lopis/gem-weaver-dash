@@ -8,6 +8,6 @@ export function spawnHighlight(cell: Vec2) {
   $highlight.className = 'highlight';
   $highlight.style.gridColumn = `${cell.x + 1}`;
   $highlight.style.gridRow = `${cell.y + 1}`;
-  grid.insertBefore($highlight, grid.firstChild);
+  gd.insertBefore($highlight, gd.firstChild);
   addTimeEvent(() => $highlight.remove(), 0, 0, HIGHLIGHT_DURATION);
 }

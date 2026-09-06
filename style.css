@@ -134,14 +134,14 @@ dialog::backdrop {
   background: var(--b2);
 }
 
-#levels {
+#lv {
 	margin: 1rem 0;
 	display: flex;
 	justify-content: space-evenly;
   gap: 0.3rem;
 }
 
-#levels .btn {
+#lv .btn {
 	font-size: 1rem;
 	border-width: 0.2rem;
 	aspect-ratio: 1;
@@ -171,7 +171,7 @@ dialog::backdrop {
 /* Shared sprite-strip rendering */
 .skf-g,
 i,
-#unicorn .u0 {
+#u .u0 {
   background-repeat: no-repeat;
   background-size: 500% 100%;
   image-rendering: pixelated;
@@ -200,7 +200,7 @@ i {
   }
 }
 
-#unicorn {
+#u {
   --us: clamp(2.8rem, 15%, 5rem);
   position: absolute;
   transform: translate(-50%, -50%) scaleX(var(--ux, 1));
@@ -213,7 +213,7 @@ i {
   z-index: 3;
 }
 
-#unicorn .u-death {
+#u .u-death {
   display: none;
   position: absolute;
   inset: -35%;
@@ -221,22 +221,22 @@ i {
   z-index: 4;
 }
 
-#unicorn .u-death > span {
+#u .u-death > span {
   position: absolute;
   inset: 0;
 }
 
-#unicorn.dead .u0,
-#unicorn.dead .u1 {
+#u.dead .u0,
+#u.dead .u1 {
   display: none;
 }
 
-#unicorn.dead.dead-bush .u-death-bush {
+#u.dead.dead-bush .u-death-bush {
   display: block;
 }
 
-/* Unicorn orbit classes: u0 core sprite, u1 orbit anchor, u2 orbit item, u3 orbit glyph */
-#unicorn .u0 {
+/* u orbit classes: u0 core sprite, u1 orbit anchor, u2 orbit item, u3 orbit glyph */
+#u .u0 {
   position: absolute;
   inset: 0;
   background-image: var(--b-UN);
@@ -244,7 +244,7 @@ i {
   z-index: 1;
 }
 
-#unicorn .u1 {
+#u .u1 {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -254,7 +254,7 @@ i {
   transform-origin: center;
 }
 
-#unicorn .u2 {
+#u .u2 {
   display: inline-flex;
   position: absolute;
   transform:
@@ -265,7 +265,7 @@ i {
   transform-origin: center;
 }
 
-#unicorn .u3 {
+#u .u3 {
   display: inline-block;
   font-size: 0.45rem;
   animation: uo 3s linear infinite reverse;
@@ -273,7 +273,7 @@ i {
   aspect-ratio: 1;
 }
 
-/* Unicorn orbit animation: reverse direction is used for glyph counter spin */
+/* u orbit animation: reverse direction is used for glyph counter spin */
 @keyframes uo {
   from {
     transform: rotate(0deg);
@@ -292,7 +292,7 @@ section {
   align-items: stretch;
 }
 
-#game {
+#gm {
   position: relative;
   gap: 0.5rem;
   min-height: 0;
@@ -325,7 +325,7 @@ section:not(.show) {
   display: none !important;
 }
 
-#grid {
+#gd {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(10, 1fr);
@@ -336,17 +336,17 @@ section:not(.show) {
   margin: auto;
 }
 
-#grid i {
+#gd i {
   pointer-events: none;
   transition: transform 500ms ease-out, opacity 200ms ease-out 300ms;
 }
 
-#grid i.animate {
+#gd i.animate {
   transform: translateY(-80%);
   opacity: 0;
 }
 
-#unicorn .u-death-bush .smoke-sheet {
+#u .u-death-bush .smoke-sheet {
   background-image: var(--fx-bush-smoke);
   background-size: 1200% 100%;
   background-position: 0 0;
@@ -354,7 +354,7 @@ section:not(.show) {
   animation: fx-smoke-sheet 500ms steps(11) forwards;
 }
 
-#grid i.obstacle-hit-bush {
+#gd i.obstacle-hit-bush {
   animation: obstacle-hit-bush 550ms ease-out;
 }
 
@@ -629,7 +629,7 @@ section:not(.show) {
 
 /* TOOL AREA */
 
-#spells {
+#sp {
 	display: flex;
   position: relative;
 	width: 170px;
@@ -638,7 +638,7 @@ section:not(.show) {
   gap: 0 0.4rem;
 }
 
-#spells button {
+#sp button {
 	width: 80px;
 	aspect-ratio: 1;
 	border-radius: 50px;
@@ -649,13 +649,13 @@ section:not(.show) {
   border: 4px solid var(--b1);
 }
 
-#spells button:active {
+#sp button:active {
   box-shadow: 0.1rem 0.1rem 0 0 var(--b1);
   transform: translate(0.2rem, 0.2rem);
 }
 
 
-#tools {
+#tl {
   display: flex;
   flex: 0 0 auto;
   min-width: 0;
@@ -756,7 +756,7 @@ section:not(.show) {
 
 /* MENU */
 
-#menu {
+#mn {
   align-items: center;
   padding-bottom: 20rem;
   gap: 1rem;
@@ -847,21 +847,21 @@ section:not(.show) {
     margin: 0.5rem;
   }
 
-  #grid {
+  #gd {
     width: min(95vw, 40vh, 400px);
     height: min(95vw, 40vh, 400px);
     aspect-ratio: 1;
   }
 
-  #grid > i {
+  #gd > i {
     font-size: 8vw;
   }
 
-  #tools {
+  #tl {
     flex-direction: column;
   }
 
-  #spells {
+  #sp {
     width: 100%;
     margin-bottom: 2rem;
   }
@@ -884,11 +884,11 @@ section:not(.show) {
     margin-top: -2rem;
   }
 
-  #game {
+  #gm {
     gap: 0.2rem;
   }
 
-  #spells {
+  #sp {
     margin-bottom: 0;
   }
 }

@@ -13,7 +13,7 @@ const nextFrame = () => new Promise<void>((resolve) => {
 
 class LoadingState implements State {
   onEnter() {
-    loading.classList.toggle('show', true);
+    ld.classList.toggle('show', true);
     this.bootstrap();
   }
 
@@ -39,7 +39,7 @@ class LoadingState implements State {
   }
 
   onLeave() {
-    loading.classList.toggle('show', false);
+    ld.classList.toggle('show', false);
   }
 
   onUpdate() {}

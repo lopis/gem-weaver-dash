@@ -1,5 +1,5 @@
 import { createGameStateMachine, gameStateMachine } from './game-state-machine';
-import { clea } from './core/draw-engine';
+import { clearCanvas } from './core/canvas';
 import { updateTimeEvents } from './core/timer';
 import { loadingState } from './game-states/loading.state';
 import { emit } from './core/event';
@@ -29,7 +29,7 @@ function update(currentTime: number) {
     return;
   }
 
-  clea();
+  clearCanvas();
 
   const state = gameStateMachine.getState();
   state.onUpdate(delta);

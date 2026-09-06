@@ -13,7 +13,7 @@ const setLevel = (level: number) => {
 
 class MenuState implements State {
   onEnter() {
-    menu.classList.toggle('show', true);
+    mn.classList.toggle('show', true);
     newGame.addEventListener('click', this.startGame)
 
     on(GAME_EVENT_LEVEL, (levelIndex: number) => {
@@ -22,7 +22,7 @@ class MenuState implements State {
   }
 
   onLeave() {
-    menu.classList.toggle('show', false);
+    mn.classList.toggle('show', false);
     newGame.removeEventListener('click', this.startGame);
   }
 

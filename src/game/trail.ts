@@ -1,4 +1,4 @@
-import { ctx4 } from '@/core/draw-engine';
+import { ctx4 } from '@/core/canvas';
 import { Vec2 } from '@/core/util/vec2';
 import { rainbowSprite } from './image-generator';
 import { player } from './unicorn';

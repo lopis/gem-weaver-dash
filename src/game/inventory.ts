@@ -60,7 +60,7 @@ export const renderInventory = () => {
     }
   }
 
-  if (unicorn) {
+  if (u) {
     const stagedCount = stagedList.length;
     const orbitHtml = stagedList
       .map((item, index) => `
@@ -70,7 +70,7 @@ export const renderInventory = () => {
       `)
       .join('');
 
-    unicorn.querySelector('.u1')!.innerHTML = orbitHtml;
+    u.querySelector('.u1')!.innerHTML = orbitHtml;
   }
 
   maybeTriggerVictory();

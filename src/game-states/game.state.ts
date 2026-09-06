@@ -1,4 +1,4 @@
-import { resizeCanvas } from '@/core/draw-engine';
+import { resizeCanvas } from '@/core/canvas';
 import { clearEvents, on } from '@/core/event';
 import { addTimeEvent, clearTimers } from '@/core/timer';
 import { State } from '@/core/state';
@@ -32,7 +32,7 @@ export class GameState implements State {
   constructor(private readonly level: number) {}
 
   onEnter() {
-    game.classList.toggle('show', true);
+    gm.classList.toggle('show', true);
     const level = decodeLevel(this.level);
     initGameData(this.level, level.initialInventory);
     initInventoryView();
@@ -75,7 +75,7 @@ export class GameState implements State {
   onLeave() {
     clearTimers();
     this.hideAllHelpTexts();
-    game.classList.toggle('show', false);
+    gm.classList.toggle('show', false);
     iv.classList.remove('animate');
     win.classList.add('hide');
     win.classList.remove('animate');

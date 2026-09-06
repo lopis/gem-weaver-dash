@@ -20,7 +20,7 @@ export class GameGrid {
   deathPending = false
 
   constructor(level: DecodedLevel) {
-    grid.querySelectorAll('i[id^="i-"], .highlight').forEach((el) => el.remove());
+    gd.querySelectorAll('i[id^="i-"], .highlight').forEach((el) => el.remove());
 
     this.grid = Array.from({ length: GRID_ROWS }, (_, y) =>
       Array.from({ length: GRID_COLS }, (_, x) => {
@@ -42,7 +42,7 @@ export class GameGrid {
           $item.classList.add(gridItem.s);
           $item.dataset['i'] = gridItem.s;
         }
-        grid.appendChild($item)
+        gd.appendChild($item)
       })
     });
 
@@ -57,9 +57,9 @@ export class GameGrid {
   }
 
   private placeUnicorn(x: number, y: number) {
-    unicorn.style.left = `${((x + 0.5) / GRID_COLS) * 100}%`;
-    unicorn.style.top = `${((y + 0.5) / GRID_ROWS) * 100}%`;
-    unicorn.style.setProperty('--ux', player.facingRight ? '-1' : '1');
+    u.style.left = `${((x + 0.5) / GRID_COLS) * 100}%`;
+    u.style.top = `${((y + 0.5) / GRID_ROWS) * 100}%`;
+    u.style.setProperty('--ux', player.facingRight ? '-1' : '1');
   }
 
   moveUnicorn(pos: {x: number, y: number}) {
@@ -67,7 +67,7 @@ export class GameGrid {
       return;
     }
 
-    const rect = grid.getBoundingClientRect();
+    const rect = gd.getBoundingClientRect();
     if (rect.width === 0 || rect.height === 0) return;
 
     const relX = Math.max(0, Math.min(rect.width - 0.0001, pos.x - rect.left));
@@ -139,7 +139,7 @@ export class GameGrid {
   }
 
   update(delta: number) {
-    const cellSize = grid.clientWidth / GRID_COLS;
+    const cellSize = gd.clientWidth / GRID_COLS;
 
     player.update(delta);
 
