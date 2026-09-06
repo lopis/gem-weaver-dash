@@ -101,7 +101,7 @@ export type BuiltSpriteLayer = {
 
 export type BuiltSprite = {
   name: string;
-  size: number;
+  sz: number;
   scale: number;
   layers: BuiltSpriteLayer[];
 };
@@ -146,7 +146,7 @@ export const buildSprite = (name: SpriteName, sampleCount: number = 100): BuiltS
 
   return {
     name,
-    size: getSpriteSize(name),
+    sz: getSpriteSize(name),
     scale: getSpriteScale(name),
     layers,
   };
@@ -187,7 +187,7 @@ const drawSpriteToContext = (
 };
 
 export const buildSpriteSheet = (sprite: BuiltSprite, settings: SketchSettings): HTMLCanvasElement => {
-  const tile = (sprite.size + SPRITE_PADDING * 2) * RENDER_SCALE;
+  const tile = (sprite.sz + SPRITE_PADDING * 2) * RENDER_SCALE;
   const sheet = document.createElement("canvas");
   sheet.width = tile * SPRITE_FRAME_COUNT;
   sheet.height = tile;
@@ -223,8 +223,8 @@ export const buildSpriteAssets = (
       name,
       sprite,
       sheet,
-      frameWidth: (sprite.size + SPRITE_PADDING * 2) * RENDER_SCALE,
-      frameHeight: (sprite.size + SPRITE_PADDING * 2) * RENDER_SCALE,
+      frameWidth: (sprite.sz + SPRITE_PADDING * 2) * RENDER_SCALE,
+      frameHeight: (sprite.sz + SPRITE_PADDING * 2) * RENDER_SCALE,
     });
   }
 

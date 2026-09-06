@@ -3,28 +3,35 @@ import { blue2, Color, cyan, cyan2, green, green2, magenta2, magenta3, red2, whi
 
 export let rainbowSprite: HTMLCanvasElement, bushSprite: HTMLCanvasElement;
 
-const BUSH_SMOKE = {
-  size: 96,
-  frames: 12,
-  fill: white,
-  border: magenta3,
-  borderPx: 4,
-  drawThreshold: 0.2,
-  center: { x: 0.5, y: 0.52 },
-  spread: { start: 2, end: 26, burstEndT: 0.58 },
-  outer: { startR: 6, peakR: 23, peakT: 0.55, endR: 0 },
-  centerPuff: { delayT: 0.25, peakR: 30, peakT: 0.72, endR: 0 },
-  jitterAmp: 1.5,
-  dirs: [
-    { x: -0.85, y: -0.4 },
-    { x: 0.88, y: -0.32 },
-    { x: -0.58, y: 0.78 },
-    { x: 0.62, y: 0.82 },
-  ] as const,
-} as const;
+const BUSH_SMOKE_SIZE = 96;
+const BUSH_SMOKE_FRAMES = 12;
+const BUSH_SMOKE_FILL = white;
+const BUSH_SMOKE_BORDER = magenta3;
+const BUSH_SMOKE_BORDER_PX = 4;
+const BUSH_SMOKE_DRAW_THRESHOLD = 0.2;
+const BUSH_SMOKE_CENTER_X = 0.5;
+const BUSH_SMOKE_CENTER_Y = 0.52;
+const BUSH_SMOKE_SPREAD_START = 2;
+const BUSH_SMOKE_SPREAD_END = 26;
+const BUSH_SMOKE_SPREAD_BURST_END_T = 0.58;
+const BUSH_SMOKE_OUTER_START_R = 6;
+const BUSH_SMOKE_OUTER_PEAK_R = 23;
+const BUSH_SMOKE_OUTER_PEAK_T = 0.55;
+const BUSH_SMOKE_OUTER_END_R = 0;
+const BUSH_SMOKE_CENTER_PUFF_DELAY_T = 0.25;
+const BUSH_SMOKE_CENTER_PUFF_PEAK_R = 30;
+const BUSH_SMOKE_CENTER_PUFF_PEAK_T = 0.72;
+const BUSH_SMOKE_CENTER_PUFF_END_R = 0;
+const BUSH_SMOKE_JITTER_AMP = 1.5;
+const BUSH_SMOKE_DIRS = [
+  { x: -0.85, y: -0.4 },
+  { x: 0.88, y: -0.32 },
+  { x: -0.58, y: 0.78 },
+  { x: 0.62, y: 0.82 },
+] as const;
 
 const BUSH_SMOKE_BORDER_OFFSETS = (() => {
-  const radius = BUSH_SMOKE.borderPx;
+  const radius = BUSH_SMOKE_BORDER_PX;
   const offsets: Array<{ x: number; y: number }> = [];
   for (let y = -radius; y <= radius; y++) {
     for (let x = -radius; x <= radius; x++) {
@@ -44,28 +51,28 @@ const drawSmokeBlob = (
 ) => {
   ctx.beginPath();
   ctx.arc(x, y, radius, 0, Math.PI * 2);
-  ctx.fillStyle = BUSH_SMOKE.fill;
+  ctx.fillStyle = BUSH_SMOKE_FILL;
   ctx.fill();
 };
 
 const createBushSmokeSpriteSheet = (): HTMLCanvasElement => {
   const sheet = document.createElement('canvas');
-  sheet.width = BUSH_SMOKE.size * BUSH_SMOKE.frames;
-  sheet.height = BUSH_SMOKE.size;
+  sheet.width = BUSH_SMOKE_SIZE * BUSH_SMOKE_FRAMES;
+  sheet.height = BUSH_SMOKE_SIZE;
   const ctx = sheet.getContext('2d') as CanvasRenderingContext2D;
 
   const blobCanvas = document.createElement('canvas');
-  blobCanvas.width = BUSH_SMOKE.size;
-  blobCanvas.height = BUSH_SMOKE.size;
+  blobCanvas.width = BUSH_SMOKE_SIZE;
+  blobCanvas.height = BUSH_SMOKE_SIZE;
   const blobCtx = blobCanvas.getContext('2d') as CanvasRenderingContext2D;
 
   const borderCanvas = document.createElement('canvas');
-  borderCanvas.width = BUSH_SMOKE.size;
-  borderCanvas.height = BUSH_SMOKE.size;
+  borderCanvas.width = BUSH_SMOKE_SIZE;
+  borderCanvas.height = BUSH_SMOKE_SIZE;
   const borderCtx = borderCanvas.getContext('2d') as CanvasRenderingContext2D;
 
-  const centerX = BUSH_SMOKE.size * BUSH_SMOKE.center.x;
-  const centerY = BUSH_SMOKE.size * BUSH_SMOKE.center.y;
+  const centerX = BUSH_SMOKE_SIZE * BUSH_SMOKE_CENTER_X;
+  const centerY = BUSH_SMOKE_SIZE * BUSH_SMOKE_CENTER_Y;
 
   const mix = (a: number, b: number, t: number) => a + (b - a) * t;
   const shape = (t: number, peakAt: number, from: number, peak: number, to: number) => {
@@ -75,40 +82,40 @@ const createBushSmokeSpriteSheet = (): HTMLCanvasElement => {
     return mix(peak, to, (t - peakAt) / (1 - peakAt));
   };
 
-  for (let frame = 0; frame < BUSH_SMOKE.frames; frame++) {
-    const p = frame / (BUSH_SMOKE.frames - 1);
-    const frameOffsetX = frame * BUSH_SMOKE.size;
+  for (let frame = 0; frame < BUSH_SMOKE_FRAMES; frame++) {
+    const p = frame / (BUSH_SMOKE_FRAMES - 1);
+    const frameOffsetX = frame * BUSH_SMOKE_SIZE;
 
     // Ease-out burst: fast expansion at start, then slower toward the end.
-    const burstT = Math.min(1, p / BUSH_SMOKE.spread.burstEndT);
-    const spread = BUSH_SMOKE.spread.start
-      + (BUSH_SMOKE.spread.end - BUSH_SMOKE.spread.start) * (1 - (1 - burstT) * (1 - burstT));
+    const burstT = Math.min(1, p / BUSH_SMOKE_SPREAD_BURST_END_T);
+    const spread = BUSH_SMOKE_SPREAD_START
+      + (BUSH_SMOKE_SPREAD_END - BUSH_SMOKE_SPREAD_START) * (1 - (1 - burstT) * (1 - burstT));
     const outerRadius = shape(
       p,
-      BUSH_SMOKE.outer.peakT,
-      BUSH_SMOKE.outer.startR,
-      BUSH_SMOKE.outer.peakR,
-      BUSH_SMOKE.outer.endR,
+      BUSH_SMOKE_OUTER_PEAK_T,
+      BUSH_SMOKE_OUTER_START_R,
+      BUSH_SMOKE_OUTER_PEAK_R,
+      BUSH_SMOKE_OUTER_END_R,
     );
 
     // Delayed center puff (5th circle).
-    const q = Math.max(0, (p - BUSH_SMOKE.centerPuff.delayT) / (1 - BUSH_SMOKE.centerPuff.delayT));
+    const q = Math.max(0, (p - BUSH_SMOKE_CENTER_PUFF_DELAY_T) / (1 - BUSH_SMOKE_CENTER_PUFF_DELAY_T));
     const centerRadius = q > 0
-      ? shape(q, BUSH_SMOKE.centerPuff.peakT, 0, BUSH_SMOKE.centerPuff.peakR, BUSH_SMOKE.centerPuff.endR)
+      ? shape(q, BUSH_SMOKE_CENTER_PUFF_PEAK_T, 0, BUSH_SMOKE_CENTER_PUFF_PEAK_R, BUSH_SMOKE_CENTER_PUFF_END_R)
       : 0;
 
-    blobCtx.clearRect(0, 0, BUSH_SMOKE.size, BUSH_SMOKE.size);
-    for (let i = 0; i < BUSH_SMOKE.dirs.length; i++) {
-      const d = BUSH_SMOKE.dirs[i];
-      const jitter = (i % 2 === 0 ? -1 : 1) * p * BUSH_SMOKE.jitterAmp;
+    blobCtx.clearRect(0, 0, BUSH_SMOKE_SIZE, BUSH_SMOKE_SIZE);
+    for (let i = 0; i < BUSH_SMOKE_DIRS.length; i++) {
+      const d = BUSH_SMOKE_DIRS[i];
+      const jitter = (i % 2 === 0 ? -1 : 1) * p * BUSH_SMOKE_JITTER_AMP;
       drawSmokeBlob(blobCtx, centerX + d.x * spread + jitter, centerY + d.y * spread, outerRadius);
     }
-    if (centerRadius > BUSH_SMOKE.drawThreshold) {
+    if (centerRadius > BUSH_SMOKE_DRAW_THRESHOLD) {
       drawSmokeBlob(blobCtx, centerX, centerY, centerRadius);
     }
 
     // Build one outline around the combined white blob shape.
-    borderCtx.clearRect(0, 0, BUSH_SMOKE.size, BUSH_SMOKE.size);
+    borderCtx.clearRect(0, 0, BUSH_SMOKE_SIZE, BUSH_SMOKE_SIZE);
     for (let i = 0; i < BUSH_SMOKE_BORDER_OFFSETS.length; i++) {
       const o = BUSH_SMOKE_BORDER_OFFSETS[i];
       borderCtx.drawImage(blobCanvas, o.x, o.y);
@@ -117,8 +124,8 @@ const createBushSmokeSpriteSheet = (): HTMLCanvasElement => {
     borderCtx.globalCompositeOperation = 'destination-out';
     borderCtx.drawImage(blobCanvas, 0, 0);
     borderCtx.globalCompositeOperation = 'source-in';
-    borderCtx.fillStyle = BUSH_SMOKE.border;
-    borderCtx.fillRect(0, 0, BUSH_SMOKE.size, BUSH_SMOKE.size);
+    borderCtx.fillStyle = BUSH_SMOKE_BORDER;
+    borderCtx.fillRect(0, 0, BUSH_SMOKE_SIZE, BUSH_SMOKE_SIZE);
     borderCtx.globalCompositeOperation = 'source-over';
 
     ctx.drawImage(borderCanvas, frameOffsetX, 0);
