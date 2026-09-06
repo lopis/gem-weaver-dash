@@ -76,7 +76,7 @@ export class GameState implements State {
     clearTimers();
     this.hideAllHelpTexts();
     game.classList.toggle('show', false);
-    inventory.classList.remove('animate');
+    iv.classList.remove('animate');
     win.classList.add('hide');
     win.classList.remove('animate');
     gameData.onVictory = null;
@@ -146,7 +146,7 @@ export class GameState implements State {
       this.setHelpVisible(4, true);
     }
 
-    if (!this.help5Shown && inventory.querySelector('i.selected[data-i^="F"]')) {
+    if (!this.help5Shown && iv.querySelector('i.selected[data-i^="F"]')) {
       this.help5Shown = true;
       this.setHelpVisible(4, false);
       this.setHelpVisible(5, true);
@@ -168,7 +168,7 @@ export class GameState implements State {
     lockInteractions();
 
     addTimeEvent(() => {
-      inventory.classList.add('animate');
+      iv.classList.add('animate');
       win.classList.remove('hide');
       win.classList.add('animate');
     }, 0, 0, 1000);

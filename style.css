@@ -386,7 +386,7 @@ section:not(.show) {
   to   { opacity: 0; }
 }
 
-#inventory {
+#iv {
   position: relative;
   display: grid;
   grid-template-columns: repeat(9, 1fr);
@@ -396,7 +396,7 @@ section:not(.show) {
   flex: 0 0 auto;
 }
 
-#inventory i {
+#iv i {
   pointer-events: auto;
 	border-radius: 0.4rem;
 	padding: 0.3rem;
@@ -416,25 +416,25 @@ section:not(.show) {
 	box-sizing: border-box;
 }
 
-#inventory i[h] {
+#iv i[h] {
   border-color: var(--m4);
   box-shadow: 5px 5px 0 0 var(--m5), -1px -1px 0 0 var(--m2);
 	background-color: var(--m4);
   background-size: 0;
 }
 
-#inventory i.selected:not([h]) {
+#iv i.selected:not([h]) {
   box-shadow: 0 0 0 5px var(--w1);
 	transform: scale(1.1);
 	border: 0.1rem solid var(--bgc);
 	padding: 0.4rem;
 }
 
-#inventory i.gain:not([h]) {
+#iv i.gain:not([h]) {
   animation: inv-gain 250ms ease-out 1;
 }
 
-#inventory.r.animate i.gain:not([h]) {
+#iv.r.animate i.gain:not([h]) {
   z-index: 4;
   box-shadow: 0 0 10px var(--bgc);
 }
@@ -445,7 +445,7 @@ section:not(.show) {
   100% { transform: scale(1); }
 }
 
-#inventory i[data-count]::after {
+#iv i[data-count]::after {
 	content: attr(data-count);
 	position: absolute;
   bottom: -0.4rem;
@@ -462,7 +462,7 @@ section:not(.show) {
   border: 2px solid var(--b1);
 }
 
-#inventory i[data-count].selected::after {
+#iv i[data-count].selected::after {
   border-color: var(--w1);
 }
 
@@ -866,7 +866,7 @@ section:not(.show) {
     margin-bottom: 2rem;
   }
 
-  #inventory {
+  #iv {
     margin: 0;
   }
 
@@ -894,16 +894,16 @@ section:not(.show) {
 }
 
 @media (max-width: 400px) {
-  #inventory {
+  #iv {
     grid-template-columns: repeat(7, 1fr);
     align-items: center;
   }
 
-  #inventory > span {
+  #iv > span {
     display: none;
   }
 
-  #inventory .GW {
+  #iv .GW {
     grid-column: 7;
   }
 }

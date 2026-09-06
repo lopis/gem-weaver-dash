@@ -15,7 +15,7 @@ export class Workspace {
 
       const isSelected = el.classList.contains('selected');
 
-      for (const item of inventory.querySelectorAll('.selected')) {
+      for (const item of iv.querySelectorAll('.selected')) {
         item.classList.remove('selected');
       }
 
@@ -62,7 +62,7 @@ export class Workspace {
       el.dataset['i'] = item;
       el.dataset['c'] = String(color);
 
-      for (const item of inventory.querySelectorAll('.selected')) {
+      for (const item of iv.querySelectorAll('.selected')) {
         item.classList.remove('selected');
       }
 

@@ -13,7 +13,7 @@ let menu: HTMLElement
 let levels: HTMLElement
 let game: HTMLElement
 let gameGrid: HTMLElement
-let inventory: HTMLElement
+let iv: HTMLElement
 let tools: HTMLElement
 let spells: HTMLElement
 let workarea: HTMLElement
@@ -35,4 +35,4 @@ let mp: SVGPathElement
 let newGame: HTMLButtonElement
 let add: HTMLButtonElement
 let sub: HTMLButtonElement
-let toggleImageAnim: HTMLInputElement
+let tia: HTMLInputElement

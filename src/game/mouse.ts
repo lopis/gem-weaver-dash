@@ -65,13 +65,13 @@ export const initMouse = () => {
     emit(GAME_EVENT_WORKSPACE_SPACE_CLICK, { el: space2 });
   });
 
-  document.body.classList.toggle('stop', toggleImageAnim.checked);
-  toggleImageAnim.addEventListener('input', () => {
-    document.body.classList.toggle('stop', toggleImageAnim.checked);
+  document.body.classList.toggle('stop', tia.checked);
+  tia.addEventListener('input', () => {
+    document.body.classList.toggle('stop', tia.checked);
   });
 
   // Bind directly to each slot: smaller logic surface than delegated target walking.
-  for (const el of inventory.querySelectorAll('i') as NodeListOf<HTMLElement>) {
+  for (const el of iv.querySelectorAll('i') as NodeListOf<HTMLElement>) {
     el.addEventListener('click', () => {
       if (isInteractionLocked()) {
         return;

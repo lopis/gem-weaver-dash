@@ -27,7 +27,7 @@ export const initInventoryView = () => {
   inventoryItemsMap.clear();
 
   for (const item of inventoryItems) {
-    const el = inventory.querySelector(`.${CSS.escape(item)}`) as HTMLElement;
+    const el = iv.querySelector(`.${CSS.escape(item)}`) as HTMLElement;
     inventoryItemsMap.set(item, el);
   }
 };
