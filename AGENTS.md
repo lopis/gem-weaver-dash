@@ -35,12 +35,26 @@
 
 ## JS13k specific Instructions
 
-- Code size matters more than abstraction depth; prefer the smallest representation that survives Terser/RoadRoller well.
-- Prefer flat tuples, bitmasks, packed arrays, and short constant tables over object graphs when data is static or hot-path.
-- Keep identifiers minifier-friendly; avoid property names that are likely to stay reserved unless the browser API requires them.
-- Embed small assets and generated data at build time or in source; avoid runtime fetching, parsing, or loader code when the same result can be compiled in.
-- Keep rendering and UI styling split the normal way: logic in TS, presentation in CSS, and only bridge them where the browser API forces it.
-- Measure size on meaningful changes. Re-check `pnpm build-with-best-roadroller` after larger refactors instead of assuming a refactor is smaller.
-- Public properties are preferred to getters and setters.
-- Don't over complicate things. Don't do things I didn't ask.
-- Don't run the build after each command
+- Optimize for zipped final output, not source aesthetics. Keep changes that win in measured `dist/index.zip` size after Roadroller/ECT.
+- Preserve source readability unless asked otherwise: do not manually mangle variable names and do not remove useful comments.
+- Prefer data-shape wins that minify well: tuples, dense arrays, bitmasks, short lookup tables, and fewer object keys in hot paths.
+- Keep identifiers minifier-friendly and avoid introducing reserved-ish property names unless required by browser APIs.
+- Prefer build-time embedding/generation over runtime parsing/fetching when behavior is equivalent. However, image assets are better generated in runtime for size efficiency even if the decoding and generation code is larger.
+- Keep rendering in CSS and logic in TS unless browser APIs force crossing boundaries.
+- Public properties are preferred to getters/setters when both are valid.
+
+- Optimization workflow is mandatory:
+- Run targeted A/B tests with isolated changes (one idea at a time), not broad rewrites.
+- Revert non-winning experiments immediately; keep the best measured variant.
+- Do not assume refactors help size; verify with `pnpm build-with-best-roadroller`.
+- Don't run the build after each command; batch related edits, then measure.
+
+- Behavior guardrails:
+- Maintain existing gameplay/audio behavior by default.
+- If asked to trade quality for size (e.g., drum/noise fidelity), do it intentionally and call it out clearly.
+- When a change relies on runtime assumptions (for example singleton lifecycle), verify usage in code before removing safety logic.
+
+- Scope guardrails:
+- Don't overcomplicate things.
+- Don't do things I didn't ask.
+

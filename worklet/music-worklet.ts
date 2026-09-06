@@ -3,41 +3,13 @@
 
 declare const sampleRate: number;
 
-const BPM = 240;
-const TAU = Math.PI * 2;
-
-// Melody timbre envelope (piano-like).
-const PIANO_VIBRATO_RATE = 0.008;
-const PIANO_VIBRATO_DEPTH = 0.04;
-const PIANO_ATTACK_PER_SAMPLE = 0.002;
-const PIANO_DECAY_PER_SAMPLE = 0.00005;
-const PIANO_RELEASE_TAIL_BEATS = 16;
-const PIANO_RELEASE_PER_SAMPLE = 0.00015;
-
-// Beat loop placement and spacing.
-const BEAT_DELAY = 64;
-const BEAT_GAP = 1;
 type InitMessage = [number[], number, number[], number];
 
 type WorkletPortMessage = number | InitMessage;
 
-const gainSlew = 0.002;
-const beatIncrement = BPM / (60 * sampleRate);
+const beatIncrement = 4 / sampleRate;
 
-let play = true;
-
-// Parsed track data supplied from the main bundle.
-let melodyNotes: number[] = [];
-let melodyLengthBeats = 0;
-let beatNotes: number[] = [];
-let beatLengthBeats = 0;
-
-let seconds = 0;
-let beat = 0;
-let masterGain = 0;
-let targetGain = 1;
-let drumLowState = 0;
-let drumHighState = 0;
+let play = true, melodyNotes: number[] = [], melodyLengthBeats = 0, beatNotes: number[] = [], beatLengthBeats = 0, seconds = 0, beat = 0, masterGain = 0, targetGain = 1, drumLowState = 0, drumHighState = 0;
 
 class MpProcessor extends AudioWorkletProcessor {
   constructor() {
@@ -50,9 +22,8 @@ class MpProcessor extends AudioWorkletProcessor {
         return;
       }
 
-      const on = message !== 1;
-      play = on;
-      targetGain = on ? 1 : 0;
+      play = message !== 1;
+      targetGain = play ? 1 : 0;
     };
   }
 
@@ -68,7 +39,7 @@ class MpProcessor extends AudioWorkletProcessor {
     }
 
     for (let i = 0; i < output.length; i++) {
-      masterGain += (targetGain - masterGain) * gainSlew;
+      masterGain += (targetGain - masterGain) * 0.002;
 
       let mixed = 0;
       for (let j = 0; j < inputs.length; j++) mixed += inputs[j]?.[0]?.[i] || 0;
@@ -80,26 +51,22 @@ class MpProcessor extends AudioWorkletProcessor {
         for (let k = 0; k < melodyNotes.length; k += 3) {
           const startBeat = melodyNotes[k];
           const endBeat = melodyNotes[k + 1];
-          if (localBeat < startBeat || localBeat >= endBeat + PIANO_RELEASE_TAIL_BEATS) {
+          if (localBeat < startBeat || localBeat >= endBeat + 16) {
             continue;
           }
 
           const noteAgeInSamples = (localBeat - startBeat) / beatIncrement;
-          const vibrato = Math.sin(noteAgeInSamples * PIANO_VIBRATO_RATE) * PIANO_VIBRATO_DEPTH;
-          const attack = Math.min(1, noteAgeInSamples * PIANO_ATTACK_PER_SAMPLE);
-          const decay = Math.exp(-noteAgeInSamples * PIANO_DECAY_PER_SAMPLE);
-          const release = localBeat > endBeat
-            ? Math.exp(-(localBeat - endBeat) / beatIncrement * PIANO_RELEASE_PER_SAMPLE)
-            : 1;
 
-          melody += Math.sin(seconds * melodyNotes[k + 2] * TAU + vibrato) * attack * decay * release;
+          melody += Math.sin(seconds * melodyNotes[k + 2] * (Math.PI * 2) + Math.sin(noteAgeInSamples * 0.008) * 0.04)
+            * Math.min(1, noteAgeInSamples * 0.002)
+            * Math.exp(-noteAgeInSamples * 0.00005 + (localBeat > endBeat ? -(localBeat - endBeat) / beatIncrement * 0.00015 : 0));
         }
 
         mixed += melody * 0.22;
       }
 
-      if (beatNotes.length && beatLengthBeats > 0 && beat >= BEAT_DELAY) {
-        const localBeat = (beat - BEAT_DELAY) % (beatLengthBeats + BEAT_GAP);
+      if (beatNotes.length && beatLengthBeats > 0 && beat >= 64) {
+        const localBeat = (beat - 64) % (beatLengthBeats + 1);
 
         if (localBeat < beatLengthBeats) {
           const white = Math.random() * 2 - 1;
@@ -107,8 +74,7 @@ class MpProcessor extends AudioWorkletProcessor {
 
           for (let k = 0; k < beatNotes.length; k += 3) {
             const startBeat = beatNotes[k];
-            const endBeat = beatNotes[k + 1];
-            if (localBeat < startBeat || localBeat >= endBeat) {
+            if (localBeat < startBeat || localBeat >= beatNotes[k + 1]) {
               continue;
             }
 
