@@ -1,23 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
-
-<svg
-   width="800px"
-   height="800px"
-   viewBox="0 0 64 64"
-   aria-hidden="true"
-   role="img"
-   class="iconify iconify--emojione"
-   preserveAspectRatio="xMidYMid meet"
-   version="1.1"
-   id="svg18"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg">
-  <path
-     id="leaves"
-     d="M 35.7 2 C 35.7 2 29.707348 6.0324322 26.062812 9.6964063 C 22.339333 6.8502835 18 4.3 18 4.3 C 18 4.3 16.547435 11.450744 16.565313 16.607813 C 11.433313 16.595818 4.3 18 4.3 18 C 4.3 18 6.8518984 22.380233 9.675625 26.157187 C 6.0481268 29.827756 2 35.9 2 35.9 C 2 35.9 14.8 39.3 18.7 37.9 C 22.111687 36.643063 23.991783 32.9679 23.1825 29.4075 C 23.676189 28.82643 24.090509 28.154385 24.4 27.4 C 24.718058 26.670339 24.917049 25.916184 25.00625 25.161094 C 25.746718 25.084897 26.485751 24.900736 27.2 24.6 C 27.993305 24.254201 28.695569 23.796709 29.296719 23.256094 C 32.843193 24.012897 36.442132 22.204061 37.7 18.7 C 39.1 14.9 35.7 2 35.7 2 z " />
-  <path
-     d="M 51.5,16.7 C 63,28.3 64.350057,53.399942 58.9,58.9 53.449943,64.400058 28.5,63 16.9,51.4 8.4,42.9 12.4,30 21.2,21.1 30.1,12.2 43,8.2 51.5,16.7"
-     fill="#ef4d3c"
-     id="body" />
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="svg18" class="iconify iconify--emojione" width="800px" height="800px" aria-hidden="true" role="img" version="1.1" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+ <path id="body" d="m59 59c-11 11-70-5-38-38s48 27 38 38z" fill="#ef4d3c"/>
+ <path id="leaves" d="m36 2-10 8-8-5-1 12-12 1 5 8-8 10s17 7 29-6c12-13 5-27 5-27z"/>
 </svg>

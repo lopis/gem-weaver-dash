@@ -1,3 +1,4 @@
+import { dash } from "@/core/audio";
 import { easeOut } from "@/core/util/util";
 import { vec2, Vec2 } from "@/core/util/vec2";
 
@@ -49,6 +50,7 @@ export class Unicorn {
     this.startPos = { ...this.pos };
     this.targetPos = vec2(x, y);
     this.moveTime = 0;
+    dash();
   }
 
   die(x: number, y: number) {

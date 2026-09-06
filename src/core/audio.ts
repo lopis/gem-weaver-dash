@@ -1,6 +1,3 @@
-
-const t = (i: number, n: number)=>(n-i)/n;
-
 // Reuse a single AudioContext to avoid memory leaks
 let audioCtx: AudioContext | null = null;
 
@@ -16,6 +13,34 @@ export const playSound = (f: (i: number) => number) => {
   s.start();
 };
 
+const t = (i: number, n: number)=>(n-i)/n;
+
+
+export const dash = () => playSound((i: number) => {
+  const wind = (Math.random() * 2 - 1) * Math.sin(i/50) * Math.exp(-i/5000);
+  return wind * 0.1 + string(i) * 0.7;
+});
+
+export const string = (S: number) => S > 32e3 ? 0 : [...Array(7)].reduce((m, _, i) => {
+  const s = S - i * 1290, D = 9000 - i * 550;
+  if (s <= 0 || s > D) return m;
+  const x = s / (32 + (6 - i) * 11), f = (D - s) / D;
+  return m + ((Math.sin(x) + Math.sin(2 * x) * .22 + Math.sin(4 * x) * .1) * Math.min(1, s / 60)
+    + Math.sin(s / 3.5) * Math.exp(-s / 120) * .08) * f ** 1.5 * (.28 - i * .02);
+}, 0);
+
+// const piuu = (i: number) => {
+//   var n = 2e4;
+//   if (i > n) return 0;
+//   var q = t(i,n);
+//   return (Math.pow(i*50,0.7)&93) ? q : -q;
+// }
+
+// const jump = (i: number) => {
+//   const wind = ((piuu(i) + Math.random() * 0.2) - 1) * Math.sin(i/50) * Math.exp(-i/5000);
+//   return wind;
+// };
+
 // Sound
 // export const ooof = (pitch: number) => playSound((i: number) => {
 //   var n=2e4;
@@ -28,60 +53,60 @@ export const playSound = (f: (i: number) => number) => {
 //   return 0.1 * Math.sin(i/50 + Math.random()*50) * (8000 - i%8000) / 5000 * Math.exp(-i/8000);
 // });
 
-export const step = (length = 1) => playSound((i: number) => {
-  const n = 2e3 * length;
-  return i > n ? 0 : 0.15 * (Math.random() * 2 - 1) * Math.sin((Math.PI * i) / n);
-});
+// export const step = (length = 1) => playSound((i: number) => {
+//   const n = 2e3 * length;
+//   return i > n ? 0 : 0.15 * (Math.random() * 2 - 1) * Math.sin((Math.PI * i) / n);
+// });
 
-export const attack5 = () => playSound((i: number) => {
-  const n = 29e3;
-  if (i > n) return 0;
-  const decay = i > n * 0.6 ? Math.pow(0.9999, i - n * 0.6) : 1;
-  const phase = 5 * Math.sin(5 * Math.round(5 * i / n));
-  return decay * 0.2 * Math.sin(i/(30 - phase) + Math.random()) * (8000 - i%6000) / 5000;
-});
+// export const attack5 = () => playSound((i: number) => {
+//   const n = 29e3;
+//   if (i > n) return 0;
+//   const decay = i > n * 0.6 ? Math.pow(0.9999, i - n * 0.6) : 1;
+//   const phase = 5 * Math.sin(5 * Math.round(5 * i / n));
+//   return decay * 0.2 * Math.sin(i/(30 - phase) + Math.random()) * (8000 - i%6000) / 5000;
+// });
 
-export const attack = () => playSound((i: number) => {
-  const n = 10e3;
-  if (i > n) return 0;
-  const phase = 5 * Math.sin(5 * Math.round(5 * i / n));
-  return Math.pow(0.998, i / 10) * 0.2 * Math.sin(i/(40 - phase) + Math.random()) * (8000 - i%6000) / 5000;
-});
+// export const attack = () => playSound((i: number) => {
+//   const n = 10e3;
+//   if (i > n) return 0;
+//   const phase = 5 * Math.sin(5 * Math.round(5 * i / n));
+//   return Math.pow(0.998, i / 10) * 0.2 * Math.sin(i/(40 - phase) + Math.random()) * (8000 - i%6000) / 5000;
+// });
 
-export const repair = (pitch: number) => playSound((i: number) => {
-  return Math.sin(i/(21 - pitch) + Math.sin(i/2000)*5) * Math.exp(-i/4000) * (i/96000) * 9;
-});
+// export const repair = (pitch: number) => playSound((i: number) => {
+//   return Math.sin(i/(21 - pitch) + Math.sin(i/2000)*5) * Math.exp(-i/4000) * (i/96000) * 9;
+// });
 
-export const highRepair = (pitch: number) => playSound((i: number) => {
-  // Musical scale: each pitch step multiplies frequency by 12th root of 2
-  // Lower pitch number = higher frequency (smaller period)
-  const freq = 80 * Math.pow(2, -pitch / 12); // Base frequency decreases with pitch
-  const phase = i * 2 * Math.PI / freq + Math.sin(i/1800) * 4;
-  // Church organ sound with harmonics (fundamental + octave + perfect fifth)
-  const fundamental = Math.sin(phase);
-  const octave = Math.sin(phase * 2) * 0.5;      // One octave up (2x frequency)
-  const fifth = Math.sin(phase * 3) * 0.3;       // Perfect fifth (3x frequency) 
-  const octave2 = Math.sin(phase * 4) * 0.2;     // Two octaves up (4x frequency)
-  return (fundamental + octave + fifth + octave2) * Math.exp(-i/6000) * (i/96000) * 6;
-});
+// export const highRepair = (pitch: number) => playSound((i: number) => {
+//   // Musical scale: each pitch step multiplies frequency by 12th root of 2
+//   // Lower pitch number = higher frequency (smaller period)
+//   const freq = 80 * Math.pow(2, -pitch / 12); // Base frequency decreases with pitch
+//   const phase = i * 2 * Math.PI / freq + Math.sin(i/1800) * 4;
+//   // Church organ sound with harmonics (fundamental + octave + perfect fifth)
+//   const fundamental = Math.sin(phase);
+//   const octave = Math.sin(phase * 2) * 0.5;      // One octave up (2x frequency)
+//   const fifth = Math.sin(phase * 3) * 0.3;       // Perfect fifth (3x frequency)
+//   const octave2 = Math.sin(phase * 4) * 0.2;     // Two octaves up (4x frequency)
+//   return (fundamental + octave + fifth + octave2) * Math.exp(-i/6000) * (i/96000) * 6;
+// });
 
-export const hissAndSpit = () => playSound((i: number) => {
-  const n = 10e3;
-  if (i > n) return 0;
-  const q = (n - i) / n;
-  return ((Math.random() * 2 - 1) * Math.sin(i * 0.003) * 0.6 + Math.sin(i / (15 + Math.sin(i / 500) * 8)) * Math.exp(-i / 2000) * 0.4) * q * q * 0.3;
-});
+// export const hissAndSpit = () => playSound((i: number) => {
+//   const n = 10e3;
+//   if (i > n) return 0;
+//   const q = (n - i) / n;
+//   return ((Math.random() * 2 - 1) * Math.sin(i * 0.003) * 0.6 + Math.sin(i / (15 + Math.sin(i / 500) * 8)) * Math.exp(-i / 2000) * 0.4) * q * q * 0.3;
+// });
 
-export const heal = () => playSound((i: number) => {
-  const n = 6e3;
-  if (i > n) return 0;
-  var q = (n - i) / n;
-  return 0.5 * Math.sin(i*0.01*Math.sin(0.007*i+Math.sin(i/1200))+Math.sin(i/800))*q*q;
-});
+// export const heal = () => playSound((i: number) => {
+//   const n = 6e3;
+//   if (i > n) return 0;
+//   var q = (n - i) / n;
+//   return 0.5 * Math.sin(i*0.01*Math.sin(0.007*i+Math.sin(i/1200))+Math.sin(i/800))*q*q;
+// });
 
-export const exorcise = () => {
-  const x = ~(Math.random() * 1000);
-  return playSound((i: number) => {
-    return Math.sin(i/(10 + i/8000 - i/12000) & x + Math.sin(i/2000)*5) * Math.exp(-i/4000) * (i/96000) * 9;
-  });
-};
+// export const exorcise = () => {
+//   const x = ~(Math.random() * 1000);
+//   return playSound((i: number) => {
+//     return Math.sin(i/(10 + i/8000 - i/12000) & x + Math.sin(i/2000)*5) * Math.exp(-i/4000) * (i/96000) * 9;
+//   });
+// };
