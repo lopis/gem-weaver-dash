@@ -13,7 +13,7 @@ import { isGameItem } from "./game-item";
 import { Levels } from "./level-data";
 
 export const initMouse = () => {
-  gameGrid.addEventListener('click', (event) => {
+  grid.addEventListener('click', (event) => {
     if (isInteractionLocked()) {
       return;
     }
@@ -51,18 +51,18 @@ export const initMouse = () => {
     levels.appendChild(button);
   }
 
-  space1.addEventListener('click', () => {
+  s1.addEventListener('click', () => {
     if (isInteractionLocked()) {
       return;
     }
-    emit(GAME_EVENT_WORKSPACE_SPACE_CLICK, { el: space1 });
+    emit(GAME_EVENT_WORKSPACE_SPACE_CLICK, { el: s1 });
   });
 
-  space2.addEventListener('click', () => {
+  s2.addEventListener('click', () => {
     if (isInteractionLocked()) {
       return;
     }
-    emit(GAME_EVENT_WORKSPACE_SPACE_CLICK, { el: space2 });
+    emit(GAME_EVENT_WORKSPACE_SPACE_CLICK, { el: s2 });
   });
 
   document.body.classList.toggle('stop', tia.checked);

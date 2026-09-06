@@ -6,8 +6,8 @@ let canvasWidth = 0;
 let canvasHeight = 0;
 
 export function resizeCanvas() {
-  canvasWidth = gameGrid.clientWidth;
-  canvasHeight = gameGrid.clientHeight;
+  canvasWidth = grid.clientWidth;
+  canvasHeight = grid.clientHeight;
   ctx4.canvas.width = canvasWidth;
   ctx4.canvas.height = canvasHeight;
   ctx4.imageSmoothingEnabled = false;

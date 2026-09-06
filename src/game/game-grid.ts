@@ -20,7 +20,7 @@ export class GameGrid {
   deathPending = false
 
   constructor(level: DecodedLevel) {
-    gameGrid.querySelectorAll('i[id^="i-"], .highlight').forEach((el) => el.remove());
+    grid.querySelectorAll('i[id^="i-"], .highlight').forEach((el) => el.remove());
 
     this.grid = Array.from({ length: GRID_ROWS }, (_, y) =>
       Array.from({ length: GRID_COLS }, (_, x) => {
@@ -42,7 +42,7 @@ export class GameGrid {
           $item.classList.add(gridItem.s);
           $item.dataset['i'] = gridItem.s;
         }
-        gameGrid.appendChild($item)
+        grid.appendChild($item)
       })
     });
 
@@ -67,7 +67,7 @@ export class GameGrid {
       return;
     }
 
-    const rect = gameGrid.getBoundingClientRect();
+    const rect = grid.getBoundingClientRect();
     if (rect.width === 0 || rect.height === 0) return;
 
     const relX = Math.max(0, Math.min(rect.width - 0.0001, pos.x - rect.left));
@@ -139,7 +139,7 @@ export class GameGrid {
   }
 
   update(delta: number) {
-    const cellSize = gameGrid.clientWidth / GRID_COLS;
+    const cellSize = grid.clientWidth / GRID_COLS;
 
     player.update(delta);
 

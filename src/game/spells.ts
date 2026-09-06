@@ -166,15 +166,15 @@ const setSpaceItem = (space: HTMLElement, item: GameItem, color: ColorId): void 
 const runSpell = (lookup: (left: ColorId, right: ColorId) => SpellResult | undefined): SpellResult | undefined => {
   if (spellPending || isInteractionLocked()) return undefined;
 
-  const left = space1.dataset['c'];
-  const right = space2.dataset['c'];
+  const left = s1.dataset['c'];
+  const right = s2.dataset['c'];
 
   if (!left || !right) return undefined;
   const leftId = parseColorId(left);
   const rightId = parseColorId(right);
   if (leftId === undefined || rightId === undefined) return undefined;
 
-  if (!getSpaceItem(space1) || !getSpaceItem(space2)) return undefined;
+  if (!getSpaceItem(s1) || !getSpaceItem(s2)) return undefined;
 
   const result = lookup(leftId, rightId);
   if (result === undefined) return undefined;
@@ -183,22 +183,22 @@ const runSpell = (lookup: (left: ColorId, right: ColorId) => SpellResult | undef
 
   spellPending = true;
   lockInteractions();
-  space1.classList.add('animate');
-  space2.classList.add('animate');
+  s1.classList.add('animate');
+  s2.classList.add('animate');
 
   addTimeEvent(() => {
-    clearSpace(space1);
-    clearSpace(space2);
+    clearSpace(s1);
+    clearSpace(s2);
 
-    setSpaceItem(space3, resultGem, result);
-    space3.classList.add('animate');
+    setSpaceItem(s3, resultGem, result);
+    s3.classList.add('animate');
 
     addTimeEvent(() => {
       addToInventory(resultGem);
-      clearSpace(space3);
-      space3.classList.remove('animate');
-      space1.classList.remove('animate');
-      space2.classList.remove('animate');
+      clearSpace(s3);
+      s3.classList.remove('animate');
+      s1.classList.remove('animate');
+      s2.classList.remove('animate');
       spellPending = false;
       unlockInteractions();
     }, SPELL_PHASE_MS);

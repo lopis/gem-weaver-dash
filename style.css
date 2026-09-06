@@ -325,7 +325,7 @@ section:not(.show) {
   display: none !important;
 }
 
-#gameGrid {
+#grid {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(10, 1fr);
@@ -336,12 +336,12 @@ section:not(.show) {
   margin: auto;
 }
 
-#gameGrid i {
+#grid i {
   pointer-events: none;
   transition: transform 500ms ease-out, opacity 200ms ease-out 300ms;
 }
 
-#gameGrid i.animate {
+#grid i.animate {
   transform: translateY(-80%);
   opacity: 0;
 }
@@ -354,7 +354,7 @@ section:not(.show) {
   animation: fx-smoke-sheet 500ms steps(11) forwards;
 }
 
-#gameGrid i.obstacle-hit-bush {
+#grid i.obstacle-hit-bush {
   animation: obstacle-hit-bush 550ms ease-out;
 }
 
@@ -663,7 +663,7 @@ section:not(.show) {
   justify-content: space-evenly;
 }
 
-#workarea {
+#w {
   position: relative;
   display: flex;
   justify-content: center;
@@ -671,7 +671,7 @@ section:not(.show) {
   flex-shrink: 0;
 }
 
-#space1, #space2, #space3 {
+#s1, #s2, #s3 {
 	height: clamp(1vh, 28vw, 15vh);
 	width: clamp(1vh, 28vw, 15vh);
 	border-radius: 200px;
@@ -684,17 +684,17 @@ section:not(.show) {
 	z-index: 1;
 }
 
-#space1.animate,
-#space2.animate {
+#s1.animate,
+#s2.animate {
   --x: 1;
   animation: spell 2000ms ease-in-out forwards;
 }
 
-#space2.animate {
+#s2.animate {
   --x: -1;
 }
 
-#space3 {
+#s3 {
 	position: absolute;
 	top: 0;
 	border: none;
@@ -702,7 +702,7 @@ section:not(.show) {
   background-color: transparent !important;
 }
 
-#space3.animate {
+#s3.animate {
 	animation:
     glow 3s cubic-bezier(0,1.08,0,.99) forwards,
     shine 10s linear infinite;
@@ -749,7 +749,7 @@ section:not(.show) {
   }
 }
 
-#workarea i {
+#w i {
   height: 4rem;
   aspect-ratio: 1;
 }
@@ -847,13 +847,13 @@ section:not(.show) {
     margin: 0.5rem;
   }
 
-  #gameGrid {
+  #grid {
     width: min(95vw, 40vh, 400px);
     height: min(95vw, 40vh, 400px);
     aspect-ratio: 1;
   }
 
-  #gameGrid > i {
+  #grid > i {
     font-size: 8vw;
   }
 
@@ -880,7 +880,7 @@ section:not(.show) {
 }
 
 @media (max-width: 400px) and (max-height: 725px) {
-  #workarea {
+  #w {
     margin-top: -2rem;
   }
 

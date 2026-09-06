@@ -152,7 +152,7 @@ export class GameState implements State {
       this.setHelpVisible(5, true);
     }
 
-    if (!this.help6Shown && space1.dataset['i']?.startsWith('F') && space2.dataset['i']?.startsWith('F')) {
+    if (!this.help6Shown && s1.dataset['i']?.startsWith('F') && s2.dataset['i']?.startsWith('F')) {
       this.help6Shown = true;
       this.setHelpVisible(5, false);
       this.setHelpVisible(6, true);
