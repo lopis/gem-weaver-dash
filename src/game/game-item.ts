@@ -14,18 +14,6 @@ export const CW = 8 as const;
 export const colorIds = [CR, CO, CY, CG, CC, CB, CV, CK, CW] as const;
 export type ColorId = (typeof colorIds)[number];
 
-export const colorBgVar = [
-  'var(--red)',
-  'var(--orange)',
-  'var(--yellow)',
-  'var(--green2)',
-  'var(--cyan)',
-  'var(--blue)',
-  'var(--magenta)',
-  'var(--black)',
-  'var(--white)',
-] as const;
-
 export type FruitItem = 'FR' | 'FO' | 'FY' | 'FG' | 'FC' | 'FB' | 'FV';
 export type GemItem = 'GR' | 'GO' | 'GY' | 'GG' | 'GC' | 'GB' | 'GV' | 'GK' | 'GW';
 export type SpecialItem = 'HD' | 'HN' | 'HL' | 'HG';

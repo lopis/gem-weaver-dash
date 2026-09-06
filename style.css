@@ -1,24 +1,25 @@
 :root {
-  --red: #e33f3f;
-  --red2: #b80505;
-  --yellow: #fad354;
-  --yellow2: #e9a33a;
-  --orange: #f98f38;
-  --orange2: #df6807;
-  --green0:hsl(100, 43%, 69%);
-  --green: hsl(100, 43%, 54%);
-  --green2: hsl(100, 43%, 34%);
-  --cyan: #64c1dd;
-  --cyan2: #35b7de;
-  --blue: #355cde;
-  --blue2: #233f9c;
-  --magenta: #f39be6;
-  --magenta2: #da5dc7;
-  --magenta3: #a42d92;
-  --magenta4: #6d1e61;
-  --magenta5: #47113f;
-  --black: #131217;
-  --white: #f9f9f9;
+  --r1: #e33f3f;
+  --r2: #b80505;
+  --y1: #fad354;
+  --y2: #e9a33a;
+  --o1: #f98f38;
+  --o2: #df6807;
+  --g0:hsl(100, 43%, 69%);
+  --g1: hsl(100, 43%, 54%);
+  --g2: hsl(100, 43%, 34%);
+  --c1: #64c1dd;
+  --c2: #35b7de;
+  --u1: #355cde;
+  --u2: #233f9c;
+  --m1: #f39be6;
+  --m2: #da5dc7;
+  --m3: #a42d92;
+  --m4: #6d1e61;
+  --m5: #47113f;
+  --b1: #131217;
+  --b2: #13121755;
+  --w1: #f9f9f9;
 }
 
 @property --a {
@@ -40,7 +41,7 @@ svg {
 html, body, main {
   margin: 0;
   width: 100%;
-  background: var(--magenta3);
+  background: var(--m3);
 }
 
 html {
@@ -75,16 +76,16 @@ h1 {
   position: relative;
   margin: 0rem 0 2rem;
   text-align: center;
-  color: var(--black);
+  color: var(--b1);
   z-index: 1;
-  --s: var(--white);
+  --s: var(--w1);
   opacity: 0.8;
   filter:
     drop-shadow(0.14rem 0 0 var(--s))
     drop-shadow(0 0.14rem 0 var(--s))
     drop-shadow(-0.14rem 0 0 var(--s))
     drop-shadow(0 -0.14rem 0 var(--s))
-    drop-shadow(0 0 1rem var(--red));
+    drop-shadow(0 0 1rem var(--r1));
 }
 
 h1 .skf {
@@ -107,7 +108,7 @@ nav {
 }
 
 #redo, #conf {
-	background: var(--magenta);
+  background: var(--m1);
 	border-radius: 0.5rem;
 	padding: 0.2rem;
 	display: inline-flex;
@@ -118,11 +119,11 @@ nav {
 }
 
 dialog {
-	background: var(--magenta);
+  background: var(--m1);
 	border: none;
 	border-radius: 0.5rem;
 	padding: 3rem 1rem;
-  box-shadow: 0.5rem 0.5rem var(--black);
+  box-shadow: 0.5rem 0.5rem var(--b1);
   margin-top: 10%;
   font-size: 1.5rem;
   max-width: 600px;
@@ -130,7 +131,7 @@ dialog {
 }
 
 dialog::backdrop {
-  background: #00000055
+  background: var(--b2);
 }
 
 #levels {
@@ -303,9 +304,9 @@ section {
   min-height: 0;
   min-width: 0;
   display: flex;
-  background: var(--green0);
-  border: 0.3rem solid var(--green0);
-  box-shadow: 0.3rem 0.3rem 0 0 var(--magenta5);
+  background: var(--g0);
+  border: 0.3rem solid var(--g0);
+  box-shadow: 0.3rem 0.3rem 0 0 var(--m5);
   z-index: 0;
   border-radius: 1rem;
 }
@@ -373,7 +374,7 @@ section:not(.show) {
   width: 50%;
   height: 50%;
   place-self: center;
-  background: var(--white);
+  background: var(--w1);
   border-radius: 50%;
   pointer-events: none;
   animation: highlight-fade 500ms forwards 500ms;
@@ -408,22 +409,22 @@ section:not(.show) {
 	background-color: var(--bgc);
 	border: 0.3rem solid var(--bgc);
 	box-shadow:
-    5px 5px 0 0 var(--black),
-    0 0 0 2px var(--black),
-    -1px -1px 0 0 var(--magenta2);
+  5px 5px 0 0 var(--b1),
+  0 0 0 2px var(--b1),
+  -1px -1px 0 0 var(--m2);
 	transition: all 100ms ease-in-out;
 	box-sizing: border-box;
 }
 
 #inventory i[h] {
-  border-color: var(--magenta4);
-  box-shadow: 5px 5px 0 0 var(--magenta5), -1px -1px 0 0 var(--magenta2);
-	background-color: var(--magenta4);
+  border-color: var(--m4);
+  box-shadow: 5px 5px 0 0 var(--m5), -1px -1px 0 0 var(--m2);
+	background-color: var(--m4);
   background-size: 0;
 }
 
 #inventory i.selected:not([h]) {
-	box-shadow: 0 0 0 5px var(--white);
+  box-shadow: 0 0 0 5px var(--w1);
 	transform: scale(1.1);
 	border: 0.1rem solid var(--bgc);
 	padding: 0.4rem;
@@ -458,11 +459,11 @@ section:not(.show) {
 	align-items: center;
 	border-radius: 99px;
 	font-weight: bold;
-  border: 2px solid var(--black);
+  border: 2px solid var(--b1);
 }
 
 #inventory i[data-count].selected::after {
-  border-color: var(--white);
+  border-color: var(--w1);
 }
 
 /*
@@ -472,82 +473,82 @@ section:not(.show) {
   HD hedge, HN hand
 */
 .FO {
-  --bgc: var(--orange2);
+  --bgc: var(--o2);
   --bgi: var(--b-FO)
 }
 
 .FR {
-  --bgc: var(--red2);
+  --bgc: var(--r2);
   --bgi: var(--b-FR)
 }
 
 .FY {
-  --bgc: var(--yellow2);
+  --bgc: var(--y2);
   --bgi: var(--b-FY)
 }
 
 .FC {
-  --bgc: var(--cyan2);
+  --bgc: var(--c2);
   --bgi: var(--b-FC)
 }
 
 .FB {
-  --bgc: var(--blue2);
+  --bgc: var(--u2);
   --bgi: var(--b-FB)
 }
 
 .FV {
-  --bgc: var(--magenta2);
+  --bgc: var(--m2);
   --bgi: var(--b-FV)
 }
 
 .FG {
-  --bgc: var(--green2);
+  --bgc: var(--g2);
   --bgi: var(--b-FG)
 }
 
 .GR {
-  --bgc: var(--red2);
+  --bgc: var(--r2);
   --bgi: var(--b-GR)
 }
 
 .GO {
-  --bgc: var(--orange2);
+  --bgc: var(--o2);
   --bgi: var(--b-GO)
 }
 
 .GY {
-  --bgc: var(--yellow2);
+  --bgc: var(--y2);
   --bgi: var(--b-GY)
 }
 
 .GG {
-  --bgc: var(--green2);
+  --bgc: var(--g2);
   --bgi: var(--b-GG)
 }
 
 .GC {
-  --bgc: var(--cyan2);
+  --bgc: var(--c2);
   --bgi: var(--b-GC)
 }
 
 .GB {
-  --bgc: var(--blue2);
+  --bgc: var(--u2);
   --bgi: var(--b-GB)
 }
 
 .GV {
-  --bgc: var(--magenta2);
+  --bgc: var(--m2);
   --bgi: var(--b-GV)
 }
 
 .GK {
-  --bgc: var(--black);
+  --bgc: var(--b1);
   --bgi: var(--b-GK)
 }
 
 .GW {
-  --bgc: var(--white);
+  --bgc: var(--w1);
   --bgi: var(--b-GW)
 }
 
@@ -571,7 +572,7 @@ section:not(.show) {
   --bgi: var(--b-HN);
   top: 30%;
   left: 30%;
-  filter: drop-shadow(0px 14px 0px #00000055);
+  filter: drop-shadow(0px 14px 0px var(--b2));
   animation: sC 1s steps(4) infinite,
     tap 500ms alternate infinite ease-in-out;
   z-index: 2;
@@ -581,7 +582,7 @@ section:not(.show) {
 	position: absolute;
   z-index: 6;
 	inset: 30% 30%;
-  filter: drop-shadow(0px 0.2rem 0 white) drop-shadow(0px -0.2rem 0 white) drop-shadow(0.2rem 0 0 white) drop-shadow(-0.2rem 0 0 white);
+  filter: drop-shadow(0px 0.2rem 0 var(--var)) drop-shadow(0px -0.2rem 0 var(--var)) drop-shadow(0.2rem 0 0 var(--var)) drop-shadow(-0.2rem 0 0 var(--var));
 }
 
 #win.hide {
@@ -597,13 +598,13 @@ section:not(.show) {
   place-self: center;
 	background: linear-gradient(
     90deg,
-    var(--red) 0 calc(1 * 14%),
-    var(--orange) 0 calc(2 * 14%),
-    var(--yellow) 0 calc(3 * 14%),
-    var(--green) 0 calc(4 * 14%),
-    var(--cyan) 0 calc(5 * 14%),
-    var(--blue) 0 calc(6 * 14%),
-    var(--magenta) 0 calc(7 * 14%),
+    var(--r1) 0 calc(1 * 14%),
+    var(--o1) 0 calc(2 * 14%),
+    var(--y1) 0 calc(3 * 14%),
+    var(--g1) 0 calc(4 * 14%),
+    var(--c1) 0 calc(5 * 14%),
+    var(--u1) 0 calc(6 * 14%),
+    var(--m1) 0 calc(7 * 14%),
     transparent 0 calc(7 * 14%)
   );
   background-size: calc(78% + 0.3rem);
@@ -641,15 +642,15 @@ section:not(.show) {
 	width: 80px;
 	aspect-ratio: 1;
 	border-radius: 50px;
-	box-shadow: 0.3rem 0.3rem 0 0 var(--black);
-  background: var(--white);
+	box-shadow: 0.3rem 0.3rem 0 0 var(--b1);
+  background: var(--w1);
   background-repeat: no-repeat;
   background-position: center -21px;
-  border: 4px solid var(--black);
+  border: 4px solid var(--b1);
 }
 
 #spells button:active {
-	box-shadow: 0.1rem 0.1rem 0 0 var(--black);
+  box-shadow: 0.1rem 0.1rem 0 0 var(--b1);
   transform: translate(0.2rem, 0.2rem);
 }
 
@@ -674,7 +675,7 @@ section:not(.show) {
 	height: clamp(1vh, 28vw, 15vh);
 	width: clamp(1vh, 28vw, 15vh);
 	border-radius: 200px;
-  background: var(--bgc, #00000055);
+  background: var(--bgc, var(--b2));
 	margin: 0.3rem;
 	display: flex;
 	align-items: center;
@@ -706,7 +707,7 @@ section:not(.show) {
     glow 3s cubic-bezier(0,1.08,0,.99) forwards,
     shine 10s linear infinite;
 	z-index: 1;
-	mask: radial-gradient(white 0%, transparent 70%);
+	mask: radial-gradient(var(--var) 0%, transparent 70%);
   --a: 0deg;
   background-image: repeating-conic-gradient(from var(--a), var(--bgc) 0% 4%, transparent 5% 10%, var(--bgc) 11%);
 }
@@ -762,21 +763,21 @@ section:not(.show) {
 }
 
 .btn {
-  background: var(--magenta);
-  color: var(--magenta3);
-  border: 0.5rem solid var(--magenta2);
+  background: var(--m1);
+  color: var(--m3);
+  border: 0.5rem solid var(--m2);
 	width: 15rem;
   max-width: 100%;
 	height: 5rem;
 	font-size: 2rem;
 	font-weight: bold;
 	border-radius: 1rem;
-  box-shadow: 0.5rem 0.5rem 0 0rem var(--magenta2);
+  box-shadow: 0.5rem 0.5rem 0 0rem var(--m2);
   transition: all 100ms;
 }
 
 .btn:active {
-  box-shadow: 0.1rem 0.1rem 0 0rem var(--magenta3);
+  box-shadow: 0.1rem 0.1rem 0 0rem var(--m3);
   transform: translate(0.4rem, 0.4rem);
 }
 
@@ -785,7 +786,7 @@ section:not(.show) {
 	grid-row: 1;
 	place-self: center;
 	mix-blend-mode: overlay;
-	filter: drop-shadow(3px 3px #FFFFFF55);
+  filter: drop-shadow(3px 3px var(--g0));
   display: inline-block !important;
   transition: all 300ms cubic-bezier(.42,0,.36,1.62);
   transform: scale(1);
@@ -824,7 +825,7 @@ section:not(.show) {
   left: 0;
   z-index: 6;
   mix-blend-mode: normal;
-	filter: drop-shadow(2px 2px #FFFFFF) invert(1);
+	filter: drop-shadow(2px 2px var(--var)) invert(1);
 }
 
 [help="6"] {
