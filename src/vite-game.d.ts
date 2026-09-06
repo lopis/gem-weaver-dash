@@ -24,6 +24,8 @@ let unicorn: HTMLElement
 let win: HTMLElement
 let redo: HTMLElement
 let conf: HTMLElement
+let d: HTMLElement
+let s: HTMLElement
 
 // SVG
 let ms: SVGElement

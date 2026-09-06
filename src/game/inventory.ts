@@ -1,5 +1,5 @@
 import { CountSet } from "@/core/util/count-set";
-import { gameData } from "./game-data";
+import { gameData, inventory as gameInventory, stagedFruits } from "./game-data";
 import { fruits, FruitItem, GameItem, inventoryItems, isFruitItem, isGemItem, rainbowGems } from "./game-item";
 
 const inventoryItemsMap = new Map<GameItem, HTMLElement>();
@@ -12,7 +12,7 @@ const animateGain = (item: GameItem) => {
   el.classList.add('gain');
 };
 
-const hasRainbowSet = () => rainbowGems.every((item) => gameData.inventory.count(item) > 0);
+const hasRainbowSet = () => rainbowGems.every((item) => gameInventory.count(item) > 0);
 
 const maybeTriggerVictory = () => {
   if (gameData.victoryTriggered || !hasRainbowSet()) {
@@ -38,7 +38,7 @@ export const renderInventory = () => {
   for (const item of inventoryItems) {
     const el = inventoryItemsMap.get(item) as HTMLElement;
 
-    const total = gameData.inventory.count(item);
+    const total = gameInventory.count(item);
     if (total > 0) {
       el.removeAttribute('h');
       if (total > 1) {
@@ -54,7 +54,7 @@ export const renderInventory = () => {
   }
 
   for (const fruit of fruits) {
-    const stagedCount = gameData.stagedFruits.count(fruit);
+    const stagedCount = stagedFruits.count(fruit);
     for (let i = 0; i < stagedCount; i++) {
       stagedList.push(fruit);
     }
@@ -77,7 +77,7 @@ export const renderInventory = () => {
 };
 
 export const addToInventory = (item: GameItem, animate = true) => {
-  gameData.inventory.add(item);
+  gameInventory.add(item);
   renderInventory();
   if (animate) {
     animateGain(item);
@@ -85,7 +85,7 @@ export const addToInventory = (item: GameItem, animate = true) => {
 };
 
 export const removeFromInventory = (item: GameItem) => {
-  const removed = gameData.inventory.remove(item);
+  const removed = gameInventory.remove(item);
   if (removed) {
     renderInventory();
   }
@@ -104,7 +104,7 @@ export const collectCaughtItem = (item: GameItem) => {
 
   gameData.caughtFruits++;
 
-  const staged = gameData.stagedFruits;
+  const staged = stagedFruits;
   staged.add(item);
 
   if (staged.count(item) >= 3) {

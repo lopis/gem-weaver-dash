@@ -582,7 +582,7 @@ section:not(.show) {
 	position: absolute;
   z-index: 6;
 	inset: 30% 30%;
-  filter: drop-shadow(0px 0.2rem 0 var(--var)) drop-shadow(0px -0.2rem 0 var(--var)) drop-shadow(0.2rem 0 0 var(--var)) drop-shadow(-0.2rem 0 0 var(--var));
+  filter: drop-shadow(0px 0.2rem 0 var(--w1)) drop-shadow(0px -0.2rem 0 var(--w1)) drop-shadow(0.2rem 0 0 var(--w1)) drop-shadow(-0.2rem 0 0 var(--w1));
 }
 
 #win.hide {
@@ -707,7 +707,7 @@ section:not(.show) {
     glow 3s cubic-bezier(0,1.08,0,.99) forwards,
     shine 10s linear infinite;
 	z-index: 1;
-	mask: radial-gradient(var(--var) 0%, transparent 70%);
+	mask: radial-gradient(var(--w1) 0%, transparent 70%);
   --a: 0deg;
   background-image: repeating-conic-gradient(from var(--a), var(--bgc) 0% 4%, transparent 5% 10%, var(--bgc) 11%);
 }
@@ -825,7 +825,7 @@ section:not(.show) {
   left: 0;
   z-index: 6;
   mix-blend-mode: normal;
-	filter: drop-shadow(2px 2px var(--var)) invert(1);
+	filter: drop-shadow(2px 2px var(--w1)) invert(1);
 }
 
 [help="6"] {
