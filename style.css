@@ -575,7 +575,7 @@ section:not(.show) {
   filter: drop-shadow(0px 14px 0px var(--b2));
   animation: sC 1s steps(4) infinite,
     tap 500ms alternate infinite ease-in-out;
-  z-index: 2;
+  z-index: 3;
 }
 
 #win {
