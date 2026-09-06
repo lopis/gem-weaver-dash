@@ -137,23 +137,6 @@ class MpProcessor extends AudioWorkletProcessor {
     return sample * 0.36;
   }
 
-  // generateVinylNoise() {
-  //   const white = Math.random() * 2 - 1;
-  //   this.rumbleLowPass += (white - this.rumbleLowPass) * 0.002;
-
-  //   if (Math.random() < 0.00035) {
-  //     this.crackle = (Math.random() * 2 - 1) * (0.2 + Math.random() * Math.random() * 1.1);
-  //   }
-  //   this.crackle *= 0.9;
-
-  //   const base = (this.rumbleLowPass * 0.22 + white * 0.008) * 0.42 + this.crackle * 0.26;
-  //   const echo = this.delay[this.delayIndex];
-  //   this.delay[this.delayIndex] = base + echo * 0.35;
-  //   this.delayIndex = (this.delayIndex + 1) % this.delay.length;
-
-  //   return base + echo * 0.18;
-  // }
-
   process(inputs: Float32Array[][], outputs: Float32Array[][]) {
     const output = outputs[0]?.[0];
     if (!output) {
