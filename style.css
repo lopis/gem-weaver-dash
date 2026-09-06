@@ -135,7 +135,7 @@ dialog::backdrop {
 }
 
 #lv {
-	margin: 1rem 0;
+	margin: -1rem 0 3rem;
 	display: flex;
 	justify-content: space-evenly;
   gap: 0.3rem;
