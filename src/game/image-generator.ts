@@ -1,7 +1,7 @@
 import { createCanvasWithCtx } from '../core/util/canvas';
 import { Color, colors } from './colors';
 
-export const assets: Record<string, HTMLCanvasElement> = {};
+export let rainbowSprite: HTMLCanvasElement, bushSprite: HTMLCanvasElement;
 
 const BUSH_SMOKE = {
   size: 96,
@@ -23,38 +23,8 @@ const BUSH_SMOKE = {
   ] as const,
 } as const;
 
-const generateAsset = (draw: (ctx: CanvasRenderingContext2D) => void): HTMLCanvasElement => {
-  const [canvas, ctx] = createCanvasWithCtx(128, 128);
-  draw(ctx);
-  return canvas;
-};
-
-const rainbowSprite = (ctx: CanvasRenderingContext2D) => {
-  const rainbow = [colors.yellow, colors.green, colors.cyan, colors.magenta2];
-  const r = 22;
-  const overlap = 14;
-  const step = r * 2 - overlap;
-  const totalWidth = r * 2 + step * (rainbow.length - 1);
-  const startX = (128 - totalWidth) / 2 + r;
-  const cy = 64;
-
-  // Clip to canvas bounds so circles never bleed outside
-  ctx.save();
-  ctx.beginPath();
-  ctx.rect(0, 0, 128, 128);
-  ctx.clip();
-
-  for (let i = 0; i < rainbow.length; i++) {
-    ctx.beginPath();
-    ctx.arc(startX + i * step, cy, r, 0, Math.PI * 2);
-    ctx.fillStyle = rainbow[i];
-    ctx.fill();
-  }
-
-  ctx.restore();
-}
-
-const createBorderOffsets = (radius: number): Array<{ x: number; y: number }> => {
+const BUSH_SMOKE_BORDER_OFFSETS = (() => {
+  const radius = BUSH_SMOKE.borderPx;
   const offsets: Array<{ x: number; y: number }> = [];
   for (let y = -radius; y <= radius; y++) {
     for (let x = -radius; x <= radius; x++) {
@@ -64,9 +34,7 @@ const createBorderOffsets = (radius: number): Array<{ x: number; y: number }> =>
     }
   }
   return offsets;
-};
-
-const BUSH_SMOKE_BORDER_OFFSETS = createBorderOffsets(BUSH_SMOKE.borderPx);
+})();
 
 const drawSmokeBlob = (
   ctx: CanvasRenderingContext2D,
@@ -161,9 +129,29 @@ const createBushSmokeSpriteSheet = (): HTMLCanvasElement => {
 };
 
 export const init = (): void => {
-  assets['rainbowSprite'] = generateAsset(rainbowSprite);
-  assets['bushSmokeSprite'] = createBushSmokeSpriteSheet();
-  document.body.style.setProperty('--fx-bush-smoke', `url(${assets['bushSmokeSprite'].toDataURL()})`);
+  const [canvas, ctx] = createCanvasWithCtx(128, 128);
+  const rainbow = [colors.yellow, colors.green, colors.cyan, colors.magenta2];
+  const r = 22;
+  const step = r * 2 - 14;
+  const startX = (128 - (r * 2 + step * (rainbow.length - 1))) / 2 + r;
+
+  // Clip to canvas bounds so circles never bleed outside
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(0, 0, 128, 128);
+  ctx.clip();
+
+  for (let i = 0; i < rainbow.length; i++) {
+    ctx.beginPath();
+    ctx.arc(startX + i * step, 64, r, 0, Math.PI * 2);
+    ctx.fillStyle = rainbow[i];
+    ctx.fill();
+  }
+
+  ctx.restore();
+  rainbowSprite = canvas;
+  bushSprite = createBushSmokeSpriteSheet();
+  document.body.style.setProperty('--fx-bush-smoke', `url(${bushSprite.toDataURL()})`);
 };
 
 const createSpellIcon = (
@@ -177,19 +165,15 @@ const createSpellIcon = (
   canvas.height = size;
   const ctx = canvas.getContext('2d')!;
 
-  const radius = size * 0.28;
-  const positions = [
+  [
     { x: size * 0.35, y: size * 0.35 },
     { x: size * 0.65, y: size * 0.35 },
     { x: size * 0.5,  y: size * 0.65 }
-  ];
-
-  ctx.globalCompositeOperation = 'source-over';
-  positions.forEach((pos, i) => {
+  ].forEach((pos, i) => {
     ctx.beginPath();
-    ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2);
+    ctx.arc(pos.x, pos.y, size * 0.28, 0, Math.PI * 2);
     ctx.fillStyle = colors1[i];
-    ctx.globalCompositeOperation = i === 0 ? 'source-over' : colors2;
+    if (i) ctx.globalCompositeOperation = colors2;
     ctx.fill();
   });
 
@@ -200,27 +184,16 @@ const createSpellIcon = (
   const thickness = Math.round(size * 0.08);
   const border = Math.max(2, Math.round(size * 0.02));
   const inset = border * 2;
-
-  const hx = Math.round(pos - length / 2);
-  const hy = Math.round(pos - thickness / 2);
-  const ix = hx + border;
-  const iy = hy + border - offsetH;
-  const iw = length - inset;
-  const ih = thickness - inset;
-  const vx = Math.round(pos - thickness / 2);
-  const vy = Math.round(pos - length / 2);
-  const ivx = vx + border;
-  const ivy = vy + border - offsetH;
-  const ivw = thickness - inset;
-  const ivh = length - inset;
+  const base = Math.round(pos - length / 2);
+  const cross = Math.round(pos - thickness / 2);
 
   ctx.beginPath();
-  ctx.roundRect(ix, iy, iw, ih, 4);
+  ctx.roundRect(base + border, cross + border - offsetH, length - inset, thickness - inset, 4);
   if (symbol === 'plus') {
-    ctx.roundRect(ivx, ivy, ivw, ivh, 4);
+    ctx.roundRect(cross + border, base + border - offsetH, thickness - inset, length - inset, 4);
   }
   ctx.strokeStyle = '#1b211f';
-  ctx.lineWidth = border * 2;
+  ctx.lineWidth = inset;
   ctx.lineJoin = 'round';
   ctx.lineCap = 'round';
   ctx.stroke();

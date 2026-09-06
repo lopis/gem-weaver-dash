@@ -4,7 +4,7 @@ import { player } from "./unicorn";
 import { vec2, Vec2, bresenham } from "@/core/util/vec2";
 import { addTimeEvent } from "@/core/timer";
 import { collectCaughtItem } from "./inventory";
-import { Trail } from "./trail";
+import { drawTrail, resetTrail } from "./trail";
 import { spawnHighlight } from "./highlight";
 import { spawnObstacleDeathFx } from "./death-effects";
 import { on } from "@/core/event";
@@ -16,7 +16,6 @@ import { GRID_COLS, GRID_ROWS } from "./constants";
 export class GameGrid {
   // First coord is Y, second is X
   grid: Array<Array<GridItem | null>>
-  trail = new Trail()
   gridPos: Vec2 = vec2(6, 6)
   deathPending = false
 
@@ -31,6 +30,7 @@ export class GameGrid {
     );
 
     player.snapTo(level.unicornPos.x, level.unicornPos.y);
+  resetTrail();
     this.gridPos = vec2(level.unicornPos.x, level.unicornPos.y);
 
     this.grid.forEach((row, y) => {
@@ -143,6 +143,6 @@ export class GameGrid {
 
     player.update(delta);
 
-    this.trail.draw(cellSize);
+    drawTrail(cellSize);
   }
 }
