@@ -44,28 +44,26 @@ class MpProcessor extends AudioWorkletProcessor {
       let mixed = 0;
       for (let j = 0; j < inputs.length; j++) mixed += inputs[j]?.[0]?.[i] || 0;
 
-      if (melodyNotes.length && melodyLengthBeats > 0) {
-        const localBeat = beat % melodyLengthBeats;
-        let melody = 0;
+      const localBeat = beat % melodyLengthBeats;
+      let melody = 0;
 
-        for (let k = 0; k < melodyNotes.length; k += 3) {
-          const startBeat = melodyNotes[k];
-          const endBeat = melodyNotes[k + 1];
-          if (localBeat < startBeat || localBeat >= endBeat + 16) {
-            continue;
-          }
-
-          const noteAgeInSamples = (localBeat - startBeat) / beatIncrement;
-
-          melody += Math.sin(seconds * melodyNotes[k + 2] * (Math.PI * 2) + Math.sin(noteAgeInSamples * 0.008) * 0.04)
-            * Math.min(1, noteAgeInSamples * 0.002)
-            * Math.exp(-noteAgeInSamples * 0.00005 + (localBeat > endBeat ? -(localBeat - endBeat) / beatIncrement * 0.00015 : 0));
+      for (let k = 0; k < melodyNotes.length; k += 3) {
+        const startBeat = melodyNotes[k];
+        const endBeat = melodyNotes[k + 1];
+        if (localBeat < startBeat || localBeat >= endBeat + 16) {
+          continue;
         }
 
-        mixed += melody * 0.22;
+        const noteAgeInSamples = (localBeat - startBeat) / beatIncrement;
+
+        melody += Math.sin(seconds * melodyNotes[k + 2] * (Math.PI * 2) + Math.sin(noteAgeInSamples * 0.008) * 0.04)
+          * Math.min(1, noteAgeInSamples * 0.002)
+          * Math.exp(-noteAgeInSamples * 0.00005 + (localBeat > endBeat ? -(localBeat - endBeat) / beatIncrement * 0.00015 : 0));
       }
 
-      if (beatNotes.length && beatLengthBeats > 0 && beat >= 64) {
+      mixed += melody * 0.22;
+
+      if (beat >= 64) {
         const localBeat = (beat - 64) % (beatLengthBeats + 1);
 
         if (localBeat < beatLengthBeats) {
