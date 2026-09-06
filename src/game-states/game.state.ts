@@ -1,4 +1,4 @@
-import { drawEngine } from '@/core/draw-engine';
+import { resizeCanvas } from '@/core/draw-engine';
 import { clearEvents, on } from '@/core/event';
 import { addTimeEvent, clearTimers } from '@/core/timer';
 import { State } from '@/core/state';
@@ -40,7 +40,7 @@ export class GameState implements State {
     renderInventory();
     this.grid = new GameGrid(level);
     this.workplace = new Workspace();
-    drawEngine.resizeCanvas();
+    resizeCanvas();
     initSpellListener();
     this.help4Shown = false;
     this.help5Shown = false;

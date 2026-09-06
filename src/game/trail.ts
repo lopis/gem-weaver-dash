@@ -1,4 +1,4 @@
-import { drawEngine } from '@/core/draw-engine';
+import { ctx4 } from '@/core/draw-engine';
 import { Vec2 } from '@/core/util/vec2';
 import { assets } from './image-generator';
 import { player } from './unicorn';
@@ -56,7 +56,7 @@ export class Trail {
     const now = performance.now();
     this.sprites = this.sprites.filter(s => now - s.born < TRAIL_DURATION);
     const sprite = assets['rainbowSprite'];
-    const ctx = drawEngine.ctx4;
+    const ctx = ctx4;
     for (const s of this.sprites) {
       const opacity = 1 - (now - s.born) / TRAIL_DURATION;
       ctx.save();

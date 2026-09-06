@@ -3,6 +3,7 @@ import { GAME_EVENT_INVENTORY_CLICK, GAME_EVENT_WORKSPACE_SPACE_CLICK } from "./
 import { colorOfItem, GameItem, isGameItem } from "./game-item";
 import { isInteractionLocked } from "./interaction-lock";
 import { addToInventory, removeFromInventory } from "./inventory";
+
 export class Workspace {
   selectedItem: GameItem | null = null;
 
