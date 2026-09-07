@@ -36,7 +36,7 @@
 ## JS13k specific Instructions
 
 - Optimize for zipped final output, not source aesthetics. Keep changes that win in measured `dist/index.zip` size after Roadroller/ECT.
-- Preserve source readability unless asked otherwise: do not manually mangle variable names and do not remove useful comments.
+- Preserve source readability unless asked otherwise: do not manually mangle variable names, do not remove whitespace, and do not remove useful comments.
 - Prefer data-shape wins that minify well: tuples, dense arrays, bitmasks, short lookup tables, and fewer object keys in hot paths.
 - Keep identifiers minifier-friendly and avoid introducing reserved-ish property names unless required by browser APIs.
 - Prefer build-time embedding/generation over runtime parsing/fetching when behavior is equivalent. However, image assets are better generated in runtime for size efficiency even if the decoding and generation code is larger.

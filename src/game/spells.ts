@@ -25,48 +25,34 @@ export type SpellKind = 'add' | 'sub';
 export type SpellResult = ColorId;
 
 const SPELL_PHASE_MS = 1000;
+const LUT_W = 7;
 
 let spellPending = false;
 
-const colorOf = (id: number): ColorId => id as ColorId;
-
-const complementOf = (color: ColorId): ColorId => {
-  switch (color) {
-    case CR: return CG;
-    case CG: return CR;
-    case CO: return CB;
-    case CB: return CO;
-    case CY: return CV;
-    case CV: return CY;
-    case CC: return CO;
-    case CK: return CW;
-    case CW: return CK;
-    default: return color;
-  }
-};
-
-const addLUT: Array<Array<number>> = [
-// R  O  Y  G  C  B  V
-  [0, 1, 1, 2, 6, 6, 6], // R
-  [1, 1, 1, 2, 3, 6, 8], // O
-  [1, 1, 2, 3, 3, 3, 8], // Y
-  [2, 2, 3, 3, 4, 4, 4], // G
-  [6, 3, 3, 4, 4, 4, 5], // C
-  [6, 6, 3, 4, 4, 5, 6], // B
-  [6, 8, 8, 4, 5, 6, 6], // V
-];
-
-// SUB is row minus column
-const subLUT: Array<Array<number>> = [
-// R  O  Y  G  C  B  V
-  [7, 0, 0, 0, 0, 0, 0], // R = 0
-  [2, 7, 0, 1, 1, 1, 1], // O = 1
-  [2, 2, 7, 2, 2, 2, 2], // Y = 2
-  [3, 3, 4, 7, 2, 2, 3], // G = 3
-  [4, 4, 4, 5, 7, 3, 4], // C = 4
-  [5, 5, 5, 5, 6, 7, 4], // B = 5
-  [4, 6, 6, 6, 0, 6, 7], // V = 6
-];
+const complementLUT: readonly ColorId[] = [CG, CB, CV, CR, CO, CO, CY, CW, CK];
+const gemLUT: readonly GemItem[] = ['GR', 'GO', 'GY', 'GG', 'GC', 'GB', 'GV', 'GK', 'GW'];
+// ADD LUT
+// [
+//   [0, 1, 1, 2, 6, 6, 6],
+//   [1, 1, 1, 2, 3, 6, 8],
+//   [1, 1, 2, 3, 3, 3, 8],
+//   [2, 2, 3, 3, 4, 4, 4],
+//   [6, 3, 3, 4, 4, 4, 5],
+//   [6, 6, 3, 4, 4, 5, 6],
+//   [6, 8, 8, 4, 5, 6, 6],
+// ]
+const addLUT = '0112666111236811233382233444633444566344566884566';
+// SUB LUT
+// [
+//   [7, 0, 0, 0, 0, 0, 0],
+//   [2, 7, 0, 1, 1, 1, 1],
+//   [2, 2, 7, 2, 2, 2, 2],
+//   [3, 3, 4, 7, 2, 2, 3],
+//   [4, 4, 4, 5, 7, 3, 4],
+//   [5, 5, 5, 5, 6, 7, 4],
+//   [4, 6, 6, 6, 0, 6, 7],
+// ]
+const subLUT = '7000000270111122722223347223444573455556744666067';
 
 export const lookupAdd = (
   left: ColorId,
@@ -81,7 +67,7 @@ export const lookupAdd = (
   if (a === CW) return b;
   if (b === CW) return a;
 
-  return colorOf(addLUT[a][b]);
+  return (addLUT.charCodeAt(a * LUT_W + b) - 48) as ColorId;
 };
 
 export const lookupSub = (
@@ -92,7 +78,7 @@ export const lookupSub = (
   const b = right;
 
   // Black - any = complement
-  if (a === CK) return complementOf(b);
+  if (a === CK) return complementLUT[b];
   // White - any = white
   if (a === CW) return CW;
   // Any - white = any
@@ -100,7 +86,7 @@ export const lookupSub = (
   // Any - black = any
   if (b === CK) return a;
 
-  return colorOf(subLUT[a][b]);
+  return (subLUT.charCodeAt(a * LUT_W + b) - 48) as ColorId;
 };
 
 export const lookupSpell = (
@@ -118,19 +104,7 @@ export const lookupSpell = (
   }
 };
 
-const gemForColor = (color: ColorId): GemItem => {
-  switch (color) {
-    case CR: return 'GR';
-    case CO: return 'GO';
-    case CY: return 'GY';
-    case CG: return 'GG';
-    case CC: return 'GC';
-    case CB: return 'GB';
-    case CV: return 'GV';
-    case CK: return 'GK';
-    default: return 'GW';
-  }
-};
+const gemForColor = (color: ColorId): GemItem => gemLUT[color];
 
 const getSpaceItem = (space: HTMLElement): GameItem | undefined => {
   const token = space.dataset['i'];
