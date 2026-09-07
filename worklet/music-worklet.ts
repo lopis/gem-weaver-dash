@@ -61,7 +61,7 @@ class MpProcessor extends AudioWorkletProcessor {
           * Math.exp(-noteAgeInSamples * 0.00001 + (localBeat > endBeat ? -(localBeat - endBeat) / beatIncrement * 0.00015 : 0));
       }
 
-      mixed += melody * 0.22;
+      mixed += melody * 0.12;
 
       if (beat >= 64) {
         const localBeat = (beat - 64) % (beatLengthBeats + 1);
