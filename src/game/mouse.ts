@@ -11,6 +11,7 @@ import {
 import { isInteractionLocked } from "./interaction-lock";
 import { isGameItem } from "./game-item";
 import { Levels } from "./level-data";
+import musicPlayer from "@/core/music-player";
 
 export const initMouse = () => {
   gd.addEventListener('click', (event) => {
@@ -68,6 +69,10 @@ export const initMouse = () => {
   document.body.classList.toggle('stop', tia.checked);
   tia.addEventListener('input', () => {
     document.body.classList.toggle('stop', tia.checked);
+  });
+
+  dsm.addEventListener('input', () => {
+    dsm.checked ? musicPlayer.stop() : musicPlayer.start();
   });
 
   // Bind directly to each slot: smaller logic surface than delegated target walking.

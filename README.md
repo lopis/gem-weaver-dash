@@ -48,4 +48,8 @@ Possible ideas for achievements, if we get to that stage...
 
 ## TODO
 
+* BUG: Win rainbow not aligned with gems on wider phone screens
+* BUG: Help text too big on mobile
+* Hide subtract button until it's needed
+* Needs a way to play without music
 * Turn text rendering from background image based to masks

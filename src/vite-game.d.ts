@@ -30,3 +30,4 @@ let newGame: HTMLButtonElement
 let add: HTMLButtonElement
 let sub: HTMLButtonElement
 let tia: HTMLInputElement
+let dsm: HTMLInputElement
