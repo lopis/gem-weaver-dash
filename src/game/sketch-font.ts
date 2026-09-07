@@ -189,9 +189,9 @@ export const setSketchText = (el: HTMLElement, text: string): void => {
     const asset = glyphAssets.get(ch)!;
 
     // DEBUG. REMOVE THIS.
-    if(!asset) {
-      console.log(`Missing glyth for:`, ch);
-    }
+    // if(!asset) {
+    //   console.error(`Missing glyth for:`, ch);
+    // }
 
     const glyph = document.createElement("span");
     glyph.className = HTML_GLYPH_CLASS;

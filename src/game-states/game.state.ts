@@ -20,6 +20,7 @@ import {
   GAME_EVENT_UNPAUSE,
 } from '@/game/event-manifest';
 import musicPlayer from '@/core/music-player';
+import { setSketchText } from '@/game/sketch-font';
 
 export class GameState implements State {
   grid!: GameGrid;
@@ -47,6 +48,8 @@ export class GameState implements State {
     this.help6Shown = false;
     this.hideAllHelpTexts();
     addTimeEvent(() => this.initHelpTexts(), 0, 0, 500);
+
+    setSketchText(lvn, String(this.level + 1));
 
     on(GAME_EVENT_SPELL_ADD, () => {
       if (this.level === 1 && this.help6Shown) {

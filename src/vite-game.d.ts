@@ -18,8 +18,11 @@ let u: HTMLElement
 let win: HTMLElement
 let redo: HTMLElement
 let conf: HTMLElement
+
+// TOP
 let sd: HTMLElement
 let ss: HTMLElement
+let lvn: HTMLElement
 
 // SVG
 let ms: SVGElement

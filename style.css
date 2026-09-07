@@ -91,14 +91,18 @@ h1 .skf {
   font-size: 2em;
 }
 
-#stats {
-  display: grid;
-  grid-template-columns: auto auto 1fr auto auto;
+#top {
+  display: flex;
   width: 90%;
-  gap: 1rem;
   align-items: center;
-  justify-items: center;
+  justify-content: space-evenly;
   padding: 0.2rem;
+}
+
+#stats {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	gap: 0 0.5em;
 }
 
 nav {
