@@ -133,6 +133,31 @@ dialog::backdrop {
   background: var(--b2);
 }
 
+dialog p {
+  display: flex;
+}
+
+dialog label {
+  flex-grow: 1;
+  text-align: left;
+}
+
+[type=checkbox] {
+  display: none;
+}
+
+[type=checkbox] ~ span {
+  opacity: 0.5;
+}
+
+[type=checkbox]:checked + span {
+  display: none;
+}
+
+[type=checkbox]:not(:checked) + span + span {
+  display: none;
+}
+
 #lv {
 	margin: -1rem auto 3rem;
 	display: flex;
@@ -794,7 +819,8 @@ section:not(.show) {
   opacity: 1;
 }
 
-[help].hide {
+[help].hide,
+button.hide {
   visibility: hidden !important;
   transition: none;
   transform: scale(0);

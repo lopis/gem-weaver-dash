@@ -118,7 +118,7 @@
           <div id="sp">
             <span sketch help="6">USE ADD</span>
             <button id="add"></button>
-            <button id="sub"></button>
+            <button id="sub" class="hide"></button>
           </div>
         </div>
         <div>
@@ -128,14 +128,18 @@
     </main>
 
     <dialog id="confDialog">
-      <p sketch>GAME BY LOPIS FOR JS13K</p>
+      <div sketch>GAME BY LOPIS FOR JS13K</div>
       <p>
+        <label sketch for="tia">IMAGE ANIMATIONS</label>
         <input id="tia" type="checkbox">
-        <label sketch for="tia">DISABLE IMAGE ANIMATIONS</label>
+        <span sketch>NO</span>
+        <span sketch>YES</span>
       </p>
       <p>
+        <label sketch for="dsm">MUSIC</label>
         <input id="dsm" type="checkbox">
-        <label sketch for="dsm">DISABLE MUSIC</label>
+        <span sketch>NO</span>
+        <span sketch>YES</span>
       </p>
       <form method="dialog">
         <h3 sketch>SELECT LEVEL</h3>

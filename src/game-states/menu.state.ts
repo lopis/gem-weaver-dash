@@ -7,7 +7,7 @@ import musicPlayer from '@/core/music-player';
 
 const setLevel = (level: number) => {
   gameStateMachine.setState(new GameState(level));
-  !dsm.checked && musicPlayer.start();
+  dsm.checked && musicPlayer.start();
 }
 
 
