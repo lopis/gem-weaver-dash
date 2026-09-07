@@ -84,8 +84,7 @@ h1 {
     drop-shadow(0.14rem 0 0 var(--s))
     drop-shadow(0 0.14rem 0 var(--s))
     drop-shadow(-0.14rem 0 0 var(--s))
-    drop-shadow(0 -0.14rem 0 var(--s))
-    drop-shadow(0 0 1rem var(--r1));
+    drop-shadow(0 -0.14rem 0 var(--s));
 }
 
 h1 .skf {
@@ -872,10 +871,6 @@ section:not(.show) {
     margin: 0;
   }
 
-  .r::before {
-    background-size: calc(100% + 0.3rem);
-  }
-
   .skf {
     font-size: 1.5rem;
   }
@@ -907,5 +902,9 @@ section:not(.show) {
 
   #iv .GW {
     grid-column: 7;
+  }
+
+  .r::before {
+    background-size: calc(100% + 0.3rem);
   }
 }
