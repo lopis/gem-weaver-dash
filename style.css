@@ -261,10 +261,6 @@ i {
   display: none;
 }
 
-#u.dead.dead-bush .u-death-bush {
-  display: block;
-}
-
 /* u orbit classes: u0 core sprite, u1 orbit anchor, u2 orbit item, u3 orbit glyph */
 #u .u0 {
   position: absolute;
@@ -376,12 +372,15 @@ section:not(.show) {
   opacity: 0;
 }
 
-#u .u-death-bush .smoke-sheet {
-  background-image: var(--fx-bush-smoke);
-  background-size: 1200% 100%;
-  background-position: 0 0;
-  image-rendering: pixelated;
-  animation: fx-smoke-sheet 500ms steps(11) forwards;
+#u.dead .puff {
+	display: block;
+	height: 100%;
+	width: 100%;
+	background-image: var(--fx-bush-smoke);
+	background-size: 1200% 100%;
+	background-position: 0 0;
+	image-rendering: pixelated;
+	animation: puff 500ms steps(11) forwards;
 }
 
 #gd i.obstacle-hit-bush {
@@ -394,7 +393,7 @@ section:not(.show) {
   100% { transform: scale(1); filter: brightness(1); }
 }
 
-@keyframes fx-smoke-sheet {
+@keyframes puff {
   from { background-position: 0 0; }
   to { background-position: 100% 0; }
 }

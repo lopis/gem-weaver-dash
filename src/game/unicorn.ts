@@ -30,7 +30,6 @@ export class Unicorn {
     this.facingRight = x <= 5;
     this.moveTime = this.moveDuration;
     this.moving = false;
-    u.classList.remove('dead-bush');
     u.classList.remove('dead');
   }
 
