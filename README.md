@@ -33,6 +33,15 @@
 * Win by obtaining the 7 rainbow gems: R, O, Y, G, C, B, V
 * Black and white gems do not count toward winning
 
+### Level Lessons
+
+1. Collect gems or 7 rainbow colors
+2. Use ADD to combina 2 colors
+3. Combina a color with itself to get a gem of the same color
+4. Combining gems is also possible; some items are not important
+5. Combining fruits and gems is possible
+
+
 ## Achievements
 
 Possible ideas for achievements, if we get to that stage...
