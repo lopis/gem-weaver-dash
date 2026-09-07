@@ -1,4 +1,4 @@
-let c: HTMLCanvasElement;
+let c1: HTMLCanvasElement;
 let fav: HTMLLinkElement;
 
 // Scenes
@@ -18,8 +18,8 @@ let u: HTMLElement
 let win: HTMLElement
 let redo: HTMLElement
 let conf: HTMLElement
-let d: HTMLElement
-let s: HTMLElement
+let sd: HTMLElement
+let ss: HTMLElement
 
 // SVG
 let ms: SVGElement

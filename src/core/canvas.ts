@@ -1,6 +1,4 @@
-import { getCtx } from './util/canvas';
-
-export const ctx4 = getCtx(c);
+export const ctx4 = c1.getContext('2d') as CanvasRenderingContext2D;
 
 let canvasWidth = 0;
 let canvasHeight = 0;

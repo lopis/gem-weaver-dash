@@ -8,11 +8,9 @@ export const createCanvas = (w?: number, h?: number) => {
   return c;
 };
 
-export const getCtx = (canvas: HTMLCanvasElement) => canvas.getContext('2d')!;
-
 export const createCanvasWithCtx = (w?: number, h?: number) => {
   const canvas = createCanvas(w, h);
-  return [canvas, getCtx(canvas)] as const;
+  return [canvas, canvas.getContext('2d') as CanvasRenderingContext2D] as const;
 };
 
 export const setCanvasSize = (canvas: HTMLCanvasElement, w: number, h: number) => {

@@ -58,7 +58,7 @@ class MpProcessor extends AudioWorkletProcessor {
 
         melody += Math.sin(seconds * melodyNotes[k + 2] * (Math.PI * 2) + Math.sin(noteAgeInSamples * 0.008) * 0.04)
           * Math.min(1, noteAgeInSamples * 0.002)
-          * Math.exp(-noteAgeInSamples * 0.00005 + (localBeat > endBeat ? -(localBeat - endBeat) / beatIncrement * 0.00015 : 0));
+          * Math.exp(-noteAgeInSamples * 0.00001 + (localBeat > endBeat ? -(localBeat - endBeat) / beatIncrement * 0.00015 : 0));
       }
 
       mixed += melody * 0.22;
