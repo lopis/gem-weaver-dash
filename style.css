@@ -810,7 +810,7 @@ section:not(.show) {
   transform: translate(0.4rem, 0.4rem);
 }
 
-[help] {
+[h] {
 	grid-column: 7 / 3 span;
 	grid-row: 1;
 	place-self: center;
@@ -822,7 +822,7 @@ section:not(.show) {
   opacity: 1;
 }
 
-[help].hide,
+[h].hide,
 button.hide {
   visibility: hidden !important;
   transition: none;
@@ -830,24 +830,24 @@ button.hide {
   opacity: 0;
 }
 
-[help="2"] {
+[h="2"] {
 	grid-column: 3 / 3 span;
 	grid-row: 10;
 }
 
-[help="3"] {
+[h="3"] {
 	grid-row: 2;
 	grid-column: 3 / 3 span;
 }
 
-[help="4"] {
+[h="4"] {
 	position: absolute;
 	top: -4rem;
 	grid-column: 1 / 7 span;
   left: 0;
 }
 
-[help="5"] {
+[h="5"] {
 	position: absolute;
 	grid-column: 1 / 7 span;
   grid-row: 2;
@@ -858,12 +858,12 @@ button.hide {
 	filter: drop-shadow(2px 2px var(--w1)) invert(1);
 }
 
-[help="6"] {
+[h="6"] {
   position: absolute;
 	bottom: -2.5rem;
 }
 
-[help="7"] {
+[h="7"] {
 	grid-column: 2 / 3 span;
 	grid-row: 2;
 }

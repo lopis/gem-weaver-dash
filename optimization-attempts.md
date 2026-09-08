@@ -142,3 +142,37 @@ Simplify [src/game/sketch-path.ts](src/game/sketch-path.ts) internals without ch
 ### Conclusion
 - Both cleanups regressed final packed size.
 - Reverted both; existing structure remains the winner for now.
+
+## 2026-09-08 - Rename sketch Attribute to sk
+
+### Goal
+Reduce HTML/selector bytes by replacing the custom `sketch` attribute with `sk`.
+
+### Variant tested
+1. Rename markup attributes + selector
+- Updated all `sketch` attributes in [index.html](index.html) to `sk`.
+- Updated selector in [src/game/sketch-font.ts](src/game/sketch-font.ts) from `[sketch]` to `[sk]`.
+- Result observed: 13225 B.
+
+### Conclusion
+- Regressed versus nearby baseline state and was reverted.
+- Kept `sketch` as-is.
+
+## 2026-09-08 - Rename help Attribute to h
+
+### Goal
+Reduce bytes in HTML/CSS/selector strings by shortening `help` to `h`.
+
+### Baseline
+- Baseline before test: 13232 B (`dist/index.zip`)
+
+### Variant tested
+1. Rename `help` -> `h` across all touchpoints
+- Updated help spans in [index.html](index.html).
+- Updated selectors in [style.css](style.css) from `[help]` / `[help="n"]` to `[h]` / `[h="n"]`.
+- Updated runtime selector in [src/game-states/game.state.ts](src/game-states/game.state.ts) to `[h="${helpId}"]`.
+- Result: 13230 B
+- Delta vs baseline: -2 B (improvement)
+
+### Conclusion
+- Kept. Small but positive win.

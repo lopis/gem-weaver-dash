@@ -92,7 +92,7 @@ export class GameState implements State {
   }
 
   private setHelpVisible(helpId: number, visible: boolean) {
-    const el = document.querySelector(`[help="${helpId}"]`) as HTMLElement;
+    const el = document.querySelector(`[h="${helpId}"]`) as HTMLElement;
     el.classList.toggle('hide', !visible);
   }
 
