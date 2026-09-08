@@ -937,3 +937,17 @@ button.hide {
     background-size: calc(100% + 0.3rem);
   }
 }
+
+meter,
+meter::-webkit-meter-bar {
+  border: none;
+  height: 4rem;
+  width: 100%;
+  background: var(--m5);
+}
+
+meter::-webkit-meter-optimum-value,
+meter::-moz-meter-bar {
+  background: var(--m1);
+}
+

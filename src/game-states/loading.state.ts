@@ -34,6 +34,7 @@ class LoadingState implements State {
 
     for (const task of tasks) {
       task();
+      lm.value++;
       await nextFrame();
     }
   }
