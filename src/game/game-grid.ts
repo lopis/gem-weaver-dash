@@ -22,18 +22,12 @@ export class GameGrid {
   constructor(level: DecodedLevel) {
     gd.querySelectorAll('i[id^="i-"], .highlight').forEach((el) => el.remove());
 
-    this.grid = Array.from({ length: GRID_ROWS }, (_, y) =>
-      Array.from({ length: GRID_COLS }, (_, x) => {
+    this.grid = Array.from({ length: GRID_ROWS }, (_, y) => {
+      const row = Array.from({ length: GRID_COLS }, (_, x) => {
         const item = level.map[y][x] as GameItem | null;
         return item ? gameItem(x, y, item) : null;
-      }),
-    );
+      });
 
-    player.snapTo(level.unicornPos.x, level.unicornPos.y);
-  resetTrail();
-    this.gridPos = vec2(level.unicornPos.x, level.unicornPos.y);
-
-    this.grid.forEach((row, y) => {
       row.forEach((gridItem, x) => {
         const $item = document.createElement('i');
         $item.id = `i-${x}${y}`;
@@ -42,9 +36,15 @@ export class GameGrid {
           $item.classList.add(gridItem.s);
           $item.dataset['i'] = gridItem.s;
         }
-        gd.appendChild($item)
-      })
+        gd.appendChild($item);
+      });
+
+      return row;
     });
+
+    player.snapTo(level.unicornPos.x, level.unicornPos.y);
+    resetTrail();
+    this.gridPos = vec2(level.unicornPos.x, level.unicornPos.y);
 
     this.placeUnicorn(player.pos.x, player.pos.y);
 
