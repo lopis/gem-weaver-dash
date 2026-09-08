@@ -137,23 +137,20 @@ const createBushSmokeSpriteSheet = (): HTMLCanvasElement => {
 
 export const init = (): void => {
   const [canvas, ctx] = createCanvasWithCtx(128, 128);
-  const rainbow = [yellow, green, cyan, magenta2];
   const r = 22;
   const step = r * 2 - 14;
-  const startX = (128 - (r * 2 + step * (rainbow.length - 1))) / 2 + r;
+  const startX = (128 - (r * 2 + step * 3)) / 2 + r;
 
   // Clip to canvas bounds so circles never bleed outside
   ctx.save();
   ctx.beginPath();
-  ctx.rect(0, 0, 128, 128);
-  ctx.clip();
 
-  for (let i = 0; i < rainbow.length; i++) {
+  [yellow, green, cyan, magenta2].forEach((c, i) => {
     ctx.beginPath();
     ctx.arc(startX + i * step, 64, r, 0, Math.PI * 2);
-    ctx.fillStyle = rainbow[i];
+    ctx.fillStyle = c;
     ctx.fill();
-  }
+  });
 
   ctx.restore();
   rainbowSprite = canvas;
