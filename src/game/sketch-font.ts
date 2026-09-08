@@ -15,7 +15,6 @@ type GlyphAsset = {
   widthEm: number;
 };
 
-const FONT_EM = 1.6;
 const SAMPLE_COUNT = 48;
 const STROKE_WIDTH = 3;
 const STROKE_AMP = 0.95;
@@ -74,9 +73,7 @@ const glyphEntries: readonly GlyphEntry[] = [
   ["0", "m8.5 2.2c-4.2 0-8.4 13 0 13 8.4 8e-6 4.2-13 0-13z"],
 ];
 
-const glyphs = new Map<string, Glyph>();
 const glyphAssets = new Map<string, GlyphAsset>();
-let loaded = false;
 let fontMinY = 0;
 let fontMaxY = 0;
 
@@ -136,16 +133,6 @@ const buildGlyphAsset = (glyph: Glyph): GlyphAsset => {
   };
 };
 
-const ensureHtmlAssets = () => {
-  if (glyphAssets.size > 0) {
-    return;
-  }
-
-  for (const [key, glyph] of glyphs) {
-    glyphAssets.set(key, buildGlyphAsset(glyph));
-  }
-};
-
 const appendSpacer = (target: HTMLElement, em: number) => {
   const space = document.createElement("span");
   space.className = HTML_GLYPH_CLASS;
@@ -155,25 +142,23 @@ const appendSpacer = (target: HTMLElement, em: number) => {
 };
 
 export const initSketchFont = (): void => {
-  if (loaded) return;
+  const builtGlyphs: Array<readonly [string, Glyph]> = [];
 
   for (const [key, d] of glyphEntries) {
     const glyph = buildGlyph(d);
-    glyphs.set(key, glyph);
+    builtGlyphs.push([key, glyph]);
 
     if (glyph.minY < fontMinY) fontMinY = glyph.minY;
     if (glyph.maxY > fontMaxY) fontMaxY = glyph.maxY;
   }
 
-  ensureHtmlAssets();
-  loaded = true;
+  glyphAssets.clear();
+  for (const [key, glyph] of builtGlyphs) {
+    glyphAssets.set(key, buildGlyphAsset(glyph));
+  }
 };
 
 export const setSketchText = (el: HTMLElement, text: string): void => {
-  // if (!loaded) {
-  //   initSketchFont();
-  // }
-
   el.textContent = "";
 
   const row = document.createElement("span");
@@ -187,7 +172,7 @@ export const setSketchText = (el: HTMLElement, text: string): void => {
 
     const asset = glyphAssets.get(ch)!;
 
-    // DEBUG. REMOVE THIS.
+    // DEBUG.
     // if(!asset) {
     //   console.error(`Missing glyth for:`, ch);
     // }
@@ -204,54 +189,9 @@ export const setSketchText = (el: HTMLElement, text: string): void => {
 };
 
 export const applySketchTextFromDataAttr = (root: ParentNode = document): void => {
-  // if (!loaded) {
-  //   initSketchFont();
-  // }
-
   const nodes = root.querySelectorAll<HTMLElement>("[sketch]");
   for (const node of nodes) {
     const text = node.innerText ?? node.textContent ?? "";
     setSketchText(node, text);
   }
-};
-
-export const drawSketchText = (
-  targetCtx: CanvasRenderingContext2D,
-  text: string,
-  x: number,
-  y: number,
-  size: number,
-  frame: number = 0,
-): void => {
-  // if (!loaded) {
-  //   initSketchFont();
-  // }
-
-  const scale = size / FONT_EM;
-  let cursorX = x;
-
-  targetCtx.save();
-  targetCtx.translate(0, y);
-  targetCtx.scale(scale, scale);
-
-  for (const ch of text) {
-    if (ch === " ") {
-      cursorX += size * 0.45;
-      continue;
-    }
-
-    const glyph = glyphs.get(ch)!;
-
-    targetCtx.save();
-    targetCtx.translate(cursorX / scale - glyph.minX, 0);
-    for (let pass = 0; pass < STROKE_PASSES; pass++) {
-      drawSketchStroke(targetCtx, glyph.samples, frame, pass, black, STROKE_WIDTH, STROKE_AMP, false);
-    }
-    targetCtx.restore();
-
-    const glyphWidth = (glyph.maxX - glyph.minX) * scale;
-    cursorX += Math.max(size * 0.35, glyphWidth + size * 0.08);
-  }
-
-  targetCtx.restore();
 };
