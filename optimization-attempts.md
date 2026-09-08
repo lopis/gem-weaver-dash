@@ -176,3 +176,26 @@ Reduce bytes in HTML/CSS/selector strings by shortening `help` to `h`.
 
 ### Conclusion
 - Kept. Small but positive win.
+
+## 2026-09-08 - Trail File Simplification Attempts
+
+### Goal
+Find size wins in [src/game/trail.ts](src/game/trail.ts) without changing visual behavior.
+
+### Baseline
+- Baseline before tests: 13230 B (`dist/index.zip`)
+
+### Variants tested
+1. Flatten sprite shape + remove Vec2 prev state
+- Replaced nested `pos/angle/born` structure with short flat fields and scalar prev coords.
+- Result: 13235 B
+- Delta vs baseline: +5 B (regression)
+- Outcome: reverted.
+
+2. Reuse one `performance.now()` per draw/update tick
+- Captured `now` once at top of `drawTrail` and reused it for spawned sprite `born` and fade filtering.
+- Result: 13226 B
+- Delta vs baseline: -4 B (improvement)
+
+### Conclusion
+- Kept variant 2 only.

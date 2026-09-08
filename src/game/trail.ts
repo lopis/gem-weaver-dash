@@ -26,6 +26,7 @@ export const drawTrail = (cellSize: number) => {
   if (!prevPos) {
     prevPos = { ...player.pos };
   }
+  const now = performance.now();
 
   // Generate sprites
   if (player.moving) {
@@ -47,7 +48,7 @@ export const drawTrail = (cellSize: number) => {
             y: prevPos.y + dy * alpha,
           },
           angle: player.angle,
-          born: performance.now(),
+          born: now,
         });
 
         distanceSinceLastSpawn = overshoot;
@@ -58,7 +59,6 @@ export const drawTrail = (cellSize: number) => {
   prevPos = { ...player.pos };
 
   // Draw Sprites
-  const now = performance.now();
   sprites = sprites.filter(s => now - s.born < TRAIL_DURATION);
   const sprite = rainbowSprite;
   const ctx = ctx4;
