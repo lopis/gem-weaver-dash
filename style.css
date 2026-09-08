@@ -243,19 +243,6 @@ i {
   z-index: 3;
 }
 
-#u .u-death {
-  display: none;
-  position: absolute;
-  inset: -35%;
-  pointer-events: none;
-  z-index: 4;
-}
-
-#u .u-death > span {
-  position: absolute;
-  inset: 0;
-}
-
 #u.dead .u0,
 #u.dead .u1 {
   display: none;
@@ -381,16 +368,6 @@ section:not(.show) {
 	background-position: 0 0;
 	image-rendering: pixelated;
 	animation: puff 500ms steps(11) forwards;
-}
-
-#gd i.obstacle-hit-bush {
-  animation: obstacle-hit-bush 550ms ease-out;
-}
-
-@keyframes obstacle-hit-bush {
-  0% { transform: scale(1); filter: brightness(1); }
-  35% { transform: scale(1.12); filter: brightness(1.25); }
-  100% { transform: scale(1); filter: brightness(1); }
 }
 
 @keyframes puff {

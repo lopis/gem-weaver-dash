@@ -6,7 +6,6 @@ import { addTimeEvent } from "@/core/timer";
 import { collectCaughtItem } from "./inventory";
 import { drawTrail, resetTrail } from "./trail";
 import { spawnHighlight } from "./highlight";
-import { spawnObstacleDeathFx } from "./death-effects";
 import { on } from "@/core/event";
 import { GAME_EVENT_GRID_CLICK } from "./event-manifest";
 import { isInteractionLocked, lockInteractions } from "./interaction-lock";
@@ -133,7 +132,6 @@ export class GameGrid {
         this.deathPending = false;
         lockInteractions();
         player.die(destination.x, destination.y);
-        spawnObstacleDeathFx(destination, deathObstacle);
       }, 0, 0, 100);
     }
   }
