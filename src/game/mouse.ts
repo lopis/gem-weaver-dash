@@ -82,7 +82,7 @@ export const initMouse = () => {
         return;
       }
 
-      const token = el.dataset['i'];
+      const token = el.dataset.i;
       const item = token && isGameItem(token) ? token : undefined;
       if (!item) {
         return;

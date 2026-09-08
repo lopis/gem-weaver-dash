@@ -43,7 +43,7 @@ export class Workspace {
         return;
       }
 
-      const prevToken = el.dataset['i'];
+      const prevToken = el.dataset.i;
       const previous = prevToken && isGameItem(prevToken) ? prevToken : undefined;
 
       const removed = removeFromInventory(item);
@@ -59,8 +59,8 @@ export class Workspace {
       el.classList.add(item);
       $i.className = item;
       const color = colorOfItem(item);
-      el.dataset['i'] = item;
-      el.dataset['c'] = String(color);
+      el.dataset.i = item;
+      el.dataset.c = String(color);
 
       for (const item of iv.querySelectorAll('.selected')) {
         item.classList.remove('selected');

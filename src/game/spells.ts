@@ -107,7 +107,7 @@ export const lookupSpell = (
 const gemForColor = (color: ColorId): GemItem => gemLUT[color];
 
 const getSpaceItem = (space: HTMLElement): GameItem | undefined => {
-  const token = space.dataset['i'];
+  const token = space.dataset.i;
   if (!token || !isGameItem(token)) return undefined;
   return token;
 };
@@ -123,8 +123,8 @@ const clearSpace = (space: HTMLElement): void => {
     icon.className = '';
   }
 
-  delete space.dataset['i'];
-  delete space.dataset['c'];
+  delete space.dataset.i;
+  delete space.dataset.c;
 };
 
 const setSpaceItem = (space: HTMLElement, item: GameItem, color: ColorId): void => {
@@ -133,15 +133,15 @@ const setSpaceItem = (space: HTMLElement, item: GameItem, color: ColorId): void 
 
   space.classList.add(item);
   icon.className = item;
-  space.dataset['i'] = item;
-  space.dataset['c'] = String(color);
+  space.dataset.i = item;
+  space.dataset.c = String(color);
 };
 
 const runSpell = (lookup: (left: ColorId, right: ColorId) => SpellResult | undefined): SpellResult | undefined => {
   if (spellPending || isInteractionLocked()) return undefined;
 
-  const left = s1.dataset['c'];
-  const right = s2.dataset['c'];
+  const left = s1.dataset.c;
+  const right = s2.dataset.c;
 
   if (!left || !right) return undefined;
   const leftId = parseColorId(left);

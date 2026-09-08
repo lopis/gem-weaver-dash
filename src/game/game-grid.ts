@@ -33,7 +33,7 @@ export class GameGrid {
         this.placeAtGridCell($item, x, y);
         if (gridItem) {
           $item.classList.add(gridItem.s);
-          $item.dataset['i'] = gridItem.s;
+          $item.dataset.i = gridItem.s;
         }
         gd.appendChild($item);
       });
@@ -114,7 +114,7 @@ export class GameGrid {
             addTimeEvent(() => {
               $item.textContent = '';
               $item.classList.remove(item.s, 'animate');
-              delete $item.dataset['i'];
+              delete $item.dataset.i;
             }, 0, 0, 500);
           }
         }, 0, 0, collectDelay);
