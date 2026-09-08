@@ -189,7 +189,7 @@ export const setSketchText = (el: HTMLElement, text: string): void => {
 };
 
 export const applySketchTextFromDataAttr = (root: ParentNode = document): void => {
-  const nodes = root.querySelectorAll<HTMLElement>("[sketch]");
+  const nodes = root.querySelectorAll<HTMLElement>("[sk]");
   for (const node of nodes) {
     const text = node.innerText ?? node.textContent ?? "";
     setSketchText(node, text);
