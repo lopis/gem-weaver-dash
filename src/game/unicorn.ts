@@ -8,8 +8,6 @@ export class Unicorn {
   private targetPos: Vec2
   private moveTime = 0
   readonly moveDuration = 200
-  prevT = 0;
-  t = 0;
   moving = false
   angle = 0
   facingRight = false
@@ -72,12 +70,10 @@ export class Unicorn {
     if (this.moveTime < this.moveDuration) {
       this.moving = true;
       this.moveTime = Math.min(this.moveTime + delta, this.moveDuration);
-      const t = this.moveTime / this.moveDuration;
-      this.prevT = this.t;
-      this.t = easeOut(t); // ease-out quad
+      const t = easeOut(this.moveTime / this.moveDuration);
       this.pos = vec2(
-        this.startPos.x + (this.targetPos.x - this.startPos.x) * this.t,
-        this.startPos.y + (this.targetPos.y - this.startPos.y) * this.t,
+        this.startPos.x + (this.targetPos.x - this.startPos.x) * t,
+        this.startPos.y + (this.targetPos.y - this.startPos.y) * t,
       );
     } else {
       this.moving = false;
