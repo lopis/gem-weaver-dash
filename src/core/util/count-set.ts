@@ -4,9 +4,9 @@ export class CountSet<T> extends Set<T> {
   override add(value: T): this {
     const count = this.counts.get(value) ?? 0;
     this.counts.set(value, count + 1);
-    if (count === 0) {
-      super.add(value);
-    }
+    // if (count === 0) {
+    super.add(value);
+    // }
     return this;
   }
 
@@ -16,26 +16,26 @@ export class CountSet<T> extends Set<T> {
       return false;
     }
 
-    if (count === 1) {
-      this.counts.delete(value);
-      super.delete(value);
-      return true;
-    }
+    // if (count === 1) {
+    //   this.counts.delete(value);
+    //   super.delete(value);
+    //   return true;
+    // }
 
     this.counts.set(value, count - 1);
     return true;
   }
 
-  override delete(value: T): boolean {
-    return this.remove(value);
-  }
+  // override delete(value: T): boolean {
+  //   return this.remove(value);
+  // }
 
   count(value: T): number {
     return this.counts.get(value) ?? 0;
   }
 
-  override clear(): void {
-    this.counts.clear();
-    super.clear();
-  }
+  // override clear(): void {
+  //   this.counts.clear();
+  //   super.clear();
+  // }
 }
