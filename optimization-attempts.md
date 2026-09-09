@@ -218,6 +218,45 @@ Reduce bytes in HTML/CSS/selector strings by shortening `help` to `h`.
 - Result: 13230 B
 - Delta vs baseline: -2 B (improvement)
 
+## 2026-09-09 - Isolated Glyph-Substitution Checks
+
+### Goal
+
+Validate whether removing the `I` and `O` glyphs from the sketched UI text, or replacing the word `CLOSE` with `OK`, could shrink the final bundle in a measurable way.
+
+### Baseline
+
+- Current measured build before the glyph checks: 12956 B (`dist/index.zip` in the current working state).
+
+### Variants tested
+
+1. `I` -> `1`
+
+- Applied only to visible UI text in [index.html](index.html).
+- Result: 12959 B
+- Delta vs baseline: +3 B (regression)
+- Outcome: reverted.
+
+1. `O` -> `0`
+
+- Applied only to visible `NO` labels in [index.html](index.html).
+- Result: 12953 B
+- Delta vs baseline: -3 B (near-tie, not a clear win under current build variance)
+- Outcome: reverted to keep the stable measured baseline.
+
+1. `CLOSE` -> `OK`
+
+- Applied only to the dialog button in [index.html](index.html).
+- Result: 12953 B
+- Delta vs baseline: -3 B (same as the `O` test; not a robust savings)
+- Outcome: reverted.
+
+### Conclusion
+
+- None of the isolated glyph-substitution checks produced a consistent, repeatable win over the baseline.
+- The current measured working baseline remains the winner: 12956 B / 13312 B (97.3%).
+- No abbreviation-only rewrite was kept; the project is not pursuing the font-elimination branch unless a globally larger, measured win appears.
+
 ### Conclusion
 
 - Kept. Small but positive win.
