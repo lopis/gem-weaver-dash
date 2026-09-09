@@ -1,12 +1,9 @@
-export class CountSet<T> extends Set<T> {
+export class CountSet<T> {
   private counts = new Map<T, number>();
 
-  override add(value: T): this {
+  add(value: T): this {
     const count = this.counts.get(value) ?? 0;
     this.counts.set(value, count + 1);
-    // if (count === 0) {
-    super.add(value);
-    // }
     return this;
   }
 
@@ -16,26 +13,16 @@ export class CountSet<T> extends Set<T> {
       return false;
     }
 
-    // if (count === 1) {
-    //   this.counts.delete(value);
-    //   super.delete(value);
-    //   return true;
-    // }
-
-    this.counts.set(value, count - 1);
+    const next = count - 1;
+    if (next) {
+      this.counts.set(value, next);
+    } else {
+      this.counts.delete(value);
+    }
     return true;
   }
-
-  // override delete(value: T): boolean {
-  //   return this.remove(value);
-  // }
 
   count(value: T): number {
     return this.counts.get(value) ?? 0;
   }
-
-  // override clear(): void {
-  //   this.counts.clear();
-  //   super.clear();
-  // }
 }

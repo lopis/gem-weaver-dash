@@ -199,3 +199,80 @@ Find size wins in [src/game/trail.ts](src/game/trail.ts) without changing visual
 
 ### Conclusion
 - Kept variant 2 only.
+
+## 2026-09-09 - Flatten CountSet Wrapper
+
+### Goal
+Reduce output size by removing the generic `Set`-based wrapper around the tiny inventory/staged-fruit counting logic and making the local map-backed structure flatter.
+
+### Baseline
+- Baseline before this test: 13024 B (`dist/index.zip`)
+
+### Variant tested
+1. Remove `extends Set` and drop the unused generic Set behavior
+- Replaced the wrapper with a direct `Map<T, number>` class that exposes the same `add`, `remove`, and `count` API.
+- Kept the public behavior identical for the current inventory/staged-fruit usage.
+- Result: 13014 B
+- Delta vs baseline: -10 B (improvement)
+
+### Conclusion
+- Kept. This is a small but measurable improvement without changing game behavior.
+- This is a good example of a real over-abstraction cleanup in a tiny data structure: the generic `Set` wrapper was not buying enough bytes to justify the extra emitted code.
+
+### Follow-up note
+- This is the first successful experiment from the “flat structures vs abstraction-heavy wrappers” line of inquiry.
+- Continue with one new idea at a time, re-measuring after each change.
+
+## Possible ideas to try next
+
+### 1. Replace abstraction-heavy wrappers with flatter local logic
+- Look for places where a generic layer is larger than the actual behavior it wraps.
+- Good candidates:
+  - [src/core/event.ts](src/core/event.ts)
+  - [src/core/state.ts](src/core/state.ts)
+  - [src/core/state-machine.ts](src/core/state-machine.ts)
+  - [src/game-state-machine.ts](src/game-state-machine.ts)
+  - [src/core/util/count-set.ts](src/core/util/count-set.ts)
+- These are worth testing when the game state is tiny and the utility code is doing mostly bookkeeping.
+- For JS13k, direct condition checks and tiny local state can beat generic helper layers after minification.
+
+### 2. Prefer dense data tables over verbose object/branch logic
+- A small table or LUT is often smaller than a more "structured" implementation made of multiple helpers and condition blocks.
+- This already proved true in:
+  - [src/game/spells.ts](src/game/spells.ts)
+  - [src/game/level-data.ts](src/game/level-data.ts)
+- Favor encoded literals, compact tuples, and index-based lookups over expressive object graphs when the data is fixed and tiny.
+
+### 3. Consolidate duplicate descriptions into one canonical source
+- Avoid parallel representations of the same thing in multiple arrays/objects/DOM attributes.
+- Current pressure areas:
+  - [src/game/game-item.ts](src/game/game-item.ts)
+  - [src/game/game-data.ts](src/game/game-data.ts)
+  - [src/game-states/game.state.ts](src/game-states/game.state.ts)
+- A good canonical source is one compact definition that other code derives from, instead of several slightly different parallel views.
+
+### 4. Flat structures over abstraction-heavy classes
+- Small isolated classes with many methods can regress when the code is tiny and heavily compressed.
+- Watch for: generic wrappers, lifecycle methods, large helper chains, and over-built state machines.
+- The low-level goal is not "cleaner code" but "less output bytes after the optimizer".
+
+### 5. Check for faux-optimization in "cleaner" refactors
+- Refactors that look nicer in source often lose after Terser + Roadroller + ECT.
+- This is especially common when the refactor only rearranges logic without removing the real runtime cost.
+- Rule of thumb: if the code still has the same branches/helpers but just moves them around, it is probably not a real win.
+
+### 6. Keep static shared CSS; avoid pushing too much into runtime-generated markup/styles
+- Already validated as a losing direction in this project.
+- Repeated inline attribute styles and per-node runtime style generation can be worse than a small shared selector in static CSS.
+- This should stay as a cautionary pattern rather than a preferred optimization path.
+
+### 7. Prefer compact numeric/index representations when the data is naturally small and fixed
+- Numeric ids, index lookups, and tuple-based config can often outperform verbose named strings or object property maps.
+- However, this only wins when the conversion logic is small and the actual data payload is large enough to justify the compact representation.
+- This is the exact place where experiments should be measured against the real build, not source intuition.
+
+### 8. Revisit “better-looking” code only if it reduces literal payload
+- The most promising candidates are not the most readable ones.
+- The next search should focus on literal-heavy metadata, not wrapper-heavy architecture.
+- If an optimization does not reduce bytes in the built output, it should be reverted immediately.
+
