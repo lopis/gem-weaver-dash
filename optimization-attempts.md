@@ -219,9 +219,47 @@ Reduce output size by removing the generic `Set`-based wrapper around the tiny i
 - Kept. This is a small but measurable improvement without changing game behavior.
 - This is a good example of a real over-abstraction cleanup in a tiny data structure: the generic `Set` wrapper was not buying enough bytes to justify the extra emitted code.
 
+## 2026-09-09 - Flatten StateMachine Wrapper
+
+### Goal
+Test whether the tiny generic state wrapper is another real over-abstraction cost that can be replaced with a plain object factory pattern.
+
+### Baseline
+- Baseline before this test: 13014 B (`dist/index.zip`)
+
+### Variant tested
+1. Replace `class StateMachine` with a lean object factory using closure state
+- Kept the same `setState` / `getState` API shape and entering/leaving hooks.
+- Result: 13002 B
+- Delta vs baseline: -12 B (improvement)
+
+### Conclusion
+- Kept. This is another measured win from flattening a small abstraction that did not buy enough code or compressed size.
+- The site still behaves identically in the active game flow; the build is the deciding criterion.
+- This supports the pattern that a few compact flat closures can beat a tiny class wrapper when the output is aggressively compressed.
+
 ### Follow-up note
 - This is the first successful experiment from the “flat structures vs abstraction-heavy wrappers” line of inquiry.
 - Continue with one new idea at a time, re-measuring after each change.
+
+## 2026-09-09 - Flatten Event Listener Registry
+
+### Goal
+Reduce emitted bytes by simplifying the global event listener bookkeeping structure used by the UI/state flow.
+
+### Baseline
+- Baseline before this test: 13002 B (`dist/index.zip`)
+
+### Variant tested
+1. Replace the per-listener array registry with a keyed object map of handlers
+- Kept the same `on`, `emit`, and `clearEvents` public API.
+- Result: 13009 B
+- Delta vs baseline: +7 B (regression)
+
+### Conclusion
+- This one did not win; it regressed by 7 B and was reverted.
+- The improvement from the flattened state machine was real; the event registry version was not enough to justify the change.
+- The result reinforces the rule that a simpler flat structure only wins if it reduces the final packed output, not just the source-level complexity.
 
 ## Possible ideas to try next
 

@@ -1,20 +1,23 @@
 import { State } from './state';
 
-export class StateMachine {
-  private currentState: State;
+export type StateMachine = {
+  setState: (newState: State, ...enterArgs: any[]) => void;
+  getState: () => State;
+};
 
-  constructor(initialState: State, ...enterArgs: any) {
-    this.currentState = initialState;
-    this.currentState.onEnter?.(...enterArgs);
-  }
+export const createStateMachine = (initialState: State, ...enterArgs: any[]): StateMachine => {
+  let currentState = initialState;
 
-  setState(newState: State, ...enterArgs: any) {
-    this.currentState.onLeave?.();
-    this.currentState = newState;
-    this.currentState.onEnter?.(...enterArgs);
-  }
+  currentState.onEnter?.(...enterArgs);
 
-  getState() {
-    return this.currentState;
-  }
-}
+  return {
+    setState(newState: State, ...nextArgs: any[]) {
+      currentState.onLeave?.();
+      currentState = newState;
+      currentState.onEnter?.(...nextArgs);
+    },
+    getState() {
+      return currentState;
+    },
+  };
+};
