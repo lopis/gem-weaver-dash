@@ -28,18 +28,10 @@ export const levelTokens: Array<'UN' | GameItem> = ['UN', ...fruits, ...gems, ..
 export const inventoryItems: GameItem[] = [...fruits, ...gems];
 export const spawnItems: GameItem[] = [...fruits, ...gems];
 
+const colorMap = 'ROYGCBVKW';
 const colorFromInitial = (id: string): ColorId => {
-  switch (id) {
-    case 'R': return CR;
-    case 'O': return CO;
-    case 'Y': return CY;
-    case 'G': return CG;
-    case 'C': return CC;
-    case 'B': return CB;
-    case 'V': return CV;
-    case 'K': return CK;
-    default: return CW;
-  }
+  const index = colorMap.indexOf(id);
+  return (index === -1 ? CW : index) as ColorId;
 };
 
 export const colorOfItem = (item: GameItem): ColorId => {
