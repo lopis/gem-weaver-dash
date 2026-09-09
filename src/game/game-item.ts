@@ -26,7 +26,6 @@ export const rainbowGems: GemItem[] = ['GR', 'GO', 'GY', 'GG', 'GC', 'GB', 'GV']
 export const specialItems: SpecialItem[] = ['HD', 'HN', 'HL', 'HG'];
 export const levelTokens: Array<'UN' | GameItem> = ['UN', ...fruits, ...gems, ...specialItems];
 export const inventoryItems: GameItem[] = [...fruits, ...gems];
-export const spawnItems: GameItem[] = [...fruits, ...gems];
 
 const colorMap = 'ROYGCBVKW';
 const colorFromInitial = (id: string): ColorId => {
