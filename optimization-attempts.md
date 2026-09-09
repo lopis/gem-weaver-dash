@@ -257,6 +257,32 @@ Validate whether removing the `I` and `O` glyphs from the sketched UI text, or r
 - The current measured working baseline remains the winner: 12956 B / 13312 B (97.3%).
 - No abbreviation-only rewrite was kept; the project is not pursuing the font-elimination branch unless a globally larger, measured win appears.
 
+## 2026-09-09 - Combined glyph + wording rewrite pass
+
+### Goal
+
+Measure whether a combined pass of `O`→`0`, `I`→`1`, and a few global wording substitutions could produce a meaningful shrink beyond the local baseline.
+
+### Baseline
+
+- Prior measured working state before the combined pass: 12946 B (`dist/index.zip` in the active build state).
+
+### Variant tested
+
+1. Combined rewrite pass
+
+- Replaced visible `O` with `0` where it was a UI label.
+- Replaced visible `I` with `1` where it was a UI label.
+- Reworded a few sketched strings to eliminate letters that were only present in repeated words.
+- Result: 12919 B
+- Delta vs baseline: -27 B (improvement)
+
+### Conclusion
+
+- This combined pass is the first measured win from the glyph/word-rewrite branch.
+- The improvement was real in the build output, even though the isolated one-by-one substitutions did not consistently win.
+- This result should be treated as a successful combined optimization, not as evidence that each individual substitution is independently good.
+
 ### Conclusion
 
 - Kept. Small but positive win.
