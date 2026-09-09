@@ -431,3 +431,25 @@ Test whether replacing the `Set` membership check with a compact prefix-based pr
 - The most promising candidates are not the most readable ones.
 - The next search should focus on literal-heavy metadata, not wrapper-heavy architecture.
 - If an optimization does not reduce bytes in the built output, it should be reverted immediately.
+
+## 2026-09-09 - Flatten CountSet to object-backed storage
+
+### Goal
+
+Test whether replacing the generic `Map`-based count container with a plain object map reduces the final compressed output for the current inventory/staged-fruit bookkeeping.
+
+### Baseline
+
+- Baseline before this test: 12965 B (`dist/index.zip`)
+
+### Variant tested
+
+1. Replace `Map<T, number>` with `Record<string, number>` and direct property access
+- Kept the same `add`, `remove`, and `count` API shape.
+- Result: 12959 B
+- Delta vs baseline: -6 B (improvement)
+
+### Conclusion
+
+- Kept. This is a small but real net win from flattening a generic backing structure that was not buying enough runtime flexibility for this fixed string-keyed usage.
+- This matches the broader pattern: a flatter, more specialized structure can beat a tiny generic wrapper after Terser/Roadroller compression.
