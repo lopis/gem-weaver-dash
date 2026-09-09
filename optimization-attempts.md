@@ -350,6 +350,27 @@ Reduce literal payload by reusing one canonical level string instead of repeatin
 - Kept. This is a clear win from canonicalizing repeated literal data.
 - It is the strongest evidence yet that literal deduplication can beat code-shape churn when the data is fixed and repetitive.
 
+## 2026-09-09 - Prefix-check replacement for `isGameItem`
+
+### Goal
+Test whether replacing the `Set` membership check with a compact prefix-based predicate reduces the final compressed bundle.
+
+### Baseline
+
+- Baseline before this test: 12953 B (`dist/index.zip`)
+
+### Variant tested
+
+1. Replace `Set.has` guard with `value[0] === 'F' || value[0] === 'G' || value[0] === 'H'`
+
+- Result: 12965 B
+- Delta vs baseline: +12 B (regression)
+
+### Conclusion
+
+- Reverted. The prefix check is smaller in source, but it is worse after compression and not worth keeping.
+- This reinforces the rule that source-level simplification is not the same as output-byte savings.
+
 ## Possible ideas to try next
 
 ### 1. Replace abstraction-heavy wrappers with flatter local logic

@@ -37,10 +37,7 @@ export const colorOfItem = (item: GameItem): ColorId => {
   return colorFromInitial(item[1]);
 };
 
-const gameItems: GameItem[] = [...inventoryItems, ...specialItems];
-const gameItemSet = new Set<GameItem>(gameItems);
-
-export const isGameItem = (value: string): value is GameItem => gameItemSet.has(value as GameItem);
+export const isGameItem = (value: string): value is GameItem => value[0] === 'F' || value[0] === 'G' || value[0] === 'H';
 export const isFruitItem = (value: GameItem): value is FruitItem => value[0] === 'F';
 export const isGemItem = (value: GameItem): value is GemItem => value[0] === 'G';
 export const isObstacleItem = (value: GameItem): value is ObstacleItem => value === 'HD' || value === 'HL';
