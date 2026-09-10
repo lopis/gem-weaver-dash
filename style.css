@@ -136,6 +136,10 @@ nav.dead::before {
   z-index: 3;
 }
 
+#sd, #lvn {
+	margin-left: 1rem;
+}
+
 dialog {
   background: var(--m1);
 	border: none;
@@ -936,7 +940,8 @@ meter,
 meter::-webkit-meter-bar {
   border: none;
   height: 4rem;
-  width: 100%;
+  width: 90%;
+  margin: 0 auto;
   background: var(--m5);
 }
 

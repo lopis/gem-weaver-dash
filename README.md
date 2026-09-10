@@ -59,5 +59,7 @@ Possible ideas for achievements, if we get to that stage...
 
 * BUG: clicing on the spaces should remove the item
 * BUG: Help text too big or out of bounds on mobile
+* There's no gap between dash and number
+* The backgroud color of the gem slots should always be shown
 * Hide subtract button until it's needed
 * Turn text rendering from background image based to masks
