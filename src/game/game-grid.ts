@@ -1,5 +1,5 @@
 import { gameItem, GameItem, GridItem, isObstacleItem } from "./game-item";
-import { addDash } from "./game-data";
+import { addDash, gameData } from "./game-data";
 import { player } from "./unicorn";
 import { vec2, Vec2, bresenham } from "@/core/util/vec2";
 import { addTimeEvent } from "@/core/timer";
@@ -63,6 +63,12 @@ export class GameGrid {
 
   moveUnicorn(pos: {x: number, y: number}) {
     if (isInteractionLocked() || player.dead || this.deathPending) {
+      return;
+    }
+
+    if (gameData.dash <= 0) {
+      lockInteractions();
+      player.die(player.pos.x, player.pos.y);
       return;
     }
 

@@ -22,6 +22,23 @@ export const Levels = [
   /* 13 */ 'AAAAB4ADAACAEEIIVQCqlFJKCQAAAIAKAABgsZZUSwwAAAAAAAAAQAUAAACAMcZUACoAlFJKAQAAUEoppRUAAA',
 ];
 
+export const levelDashPar = [
+  3, /* 1 */
+  4, /* 2 */
+  5, /* 3 */
+  6, /* 4 */
+  4, /* 5 */
+  3, /* 6 */
+
+  9, /* 7 */
+  9, /* 8 */
+  9, /* 9 */
+  9, /* 10 */
+  9, /* 11 */
+  9, /* 12 */
+  9, /* 13 */
+]
+
 /**
  * Info Text
  *

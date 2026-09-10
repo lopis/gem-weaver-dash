@@ -1,6 +1,7 @@
 import { CountSet } from "@/core/util/count-set";
 import { resetInteractionLock } from "./interaction-lock";
 import { FruitItem, GameItem, GemItem } from "./game-item";
+import { levelDashPar } from "./level-data";
 import { setSketchText } from "./sketch-font";
 
 export let inventory!: CountSet<GameItem>;
@@ -16,7 +17,7 @@ export const gameData = {
 
 const renderStats = () => {
   setSketchText(sd, String(gameData.dash));
-  setSketchText(sd, String(gameData.spells));
+  setSketchText(ss, String(gameData.spells));
 };
 
 export const initGameData = (startLevel: number, initialInventory: GemItem[] = []) => {
@@ -25,7 +26,7 @@ export const initGameData = (startLevel: number, initialInventory: GemItem[] = [
   stagedFruits = new CountSet<FruitItem>();
   gameData.caughtFruits = 0;
   gameData.level = startLevel;
-  gameData.dash = 0;
+  gameData.dash = levelDashPar[startLevel];
   gameData.spells = 0;
   gameData.victoryTriggered = false;
   gameData.onVictory = null;
@@ -38,7 +39,7 @@ export const initGameData = (startLevel: number, initialInventory: GemItem[] = [
 }
 
 export const addDash = () => {
-  gameData.dash++;
+  gameData.dash--;
   renderStats();
 };
 
