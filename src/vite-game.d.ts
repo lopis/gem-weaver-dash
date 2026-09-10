@@ -20,6 +20,7 @@ let redo: HTMLElement
 let conf: HTMLElement
 let lm: HTMLMeterElement
 let nav: HTMLElement
+let nm: HTMLElement
 
 // TOP
 let sd: HTMLElement

@@ -380,6 +380,24 @@ section:not(.show) {
   opacity: 0;
 }
 
+#nm {
+	position: absolute;
+	place-self: center;
+	background: var(--m2);
+	z-index: 3;
+	padding: 5%;
+	border-radius: 0.5rem;
+	box-shadow: 0.2rem 0.2rem var(--m5);
+	transition: all 100ms ease-in-out;
+	transform: scale(0);
+	pointer-events: none;
+}
+
+#nm.animate {
+	transition: all 150ms cubic-bezier(.32,.89,.8,1.52);
+	transform: scale(1);
+}
+
 #u.dead .puff {
 	display: block;
 	height: 100%;

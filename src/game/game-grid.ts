@@ -8,7 +8,7 @@ import { drawTrail, resetTrail } from "./trail";
 import { spawnHighlight } from "./highlight";
 import { on } from "@/core/event";
 import { GAME_EVENT_GRID_CLICK } from "./event-manifest";
-import { isInteractionLocked, lockInteractions } from "./interaction-lock";
+import { isInteractionLocked, lockInteractions, unlockInteractions } from "./interaction-lock";
 import { DecodedLevel } from "./level-data";
 import { GRID_COLS, GRID_ROWS } from "./constants";
 
@@ -68,7 +68,11 @@ export class GameGrid {
 
     if (gameData.dash <= 0) {
       lockInteractions();
-      player.die(player.pos.x, player.pos.y);
+      nm.classList.add('animate');
+      addTimeEvent(() => {
+        unlockInteractions();
+        nm.classList.remove('animate');
+      }, 1000);
       return;
     }
 
