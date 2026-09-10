@@ -99,12 +99,6 @@ h1 .skf {
   padding: 0.2rem;
 }
 
-#stats {
-	display: grid;
-	grid-template-columns: 1fr auto;
-	gap: 0 0.5em;
-}
-
 nav {
 	display: flex;
 	gap: 0.5rem;

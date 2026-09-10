@@ -40,7 +40,7 @@
 3. Combina a color with itself to get a gem of the same color
 4. Combining gems is also possible; some items are not important
 5. Combining fruits and gems is possible
-
+6. White + Color = Color
 
 ## Achievements
 
