@@ -27,7 +27,6 @@ export class GameState implements State {
   workplace!: Workspace;
   private victoryStarted = false;
   private help4Shown = false;
-  private help5Shown = false;
   private help6Shown = false;
 
   constructor(private readonly level: number) {}
@@ -45,7 +44,6 @@ export class GameState implements State {
     resizeCanvas();
     initSpellListener();
     this.help4Shown = false;
-    this.help5Shown = false;
     this.help6Shown = false;
     this.hideAllHelpTexts();
     addTimeEvent(() => this.initHelpTexts(), 0, 0, 500);
@@ -54,13 +52,13 @@ export class GameState implements State {
 
     on(GAME_EVENT_SPELL_ADD, () => {
       if (this.level === 1 && this.help6Shown) {
-        this.setHelpVisible(6, false);
+        this.setHelpVisible(5, false);
       }
     });
 
     on(GAME_EVENT_SPELL_SUB, () => {
       if (this.level === 1 && this.help6Shown) {
-        this.setHelpVisible(6, false);
+        this.setHelpVisible(5, false);
       }
     });
 
@@ -98,7 +96,7 @@ export class GameState implements State {
   }
 
   private hideAllHelpTexts() {
-    for (let i = 1; i <= 7; i++) {
+    for (let i = 1; i <= 6; i++) {
       this.setHelpVisible(i, false);
     }
   }
@@ -116,7 +114,7 @@ export class GameState implements State {
     }
 
     if (this.level === 3) {
-      this.setHelpVisible(7, true);
+      this.setHelpVisible(6, true);
     }
   }
 
@@ -131,8 +129,8 @@ export class GameState implements State {
    * Level 1:
    *  show help 3;
    *  after catching 6 fruit, show help 4 and hide help 3;
-   *  after selecting a fruit from inventory, show help 5 and hide help 4;
-   *  after putting fruits in both spaces, hide help 5 and show help 6;
+   *  when a fruit is placed into either spell space, hide help 4;
+   *  after putting fruits in both spaces, show help 6;
    *  after doing the spell, hide help 6.
    * Level 2:
    *  no help text
@@ -150,16 +148,14 @@ export class GameState implements State {
       this.setHelpVisible(4, true);
     }
 
-    if (!this.help5Shown && iv.querySelector('i.selected[data-i^="F"]')) {
-      this.help5Shown = true;
+    if (!this.help4Shown && (s1.dataset['i']?.startsWith('F') || s2.dataset['i']?.startsWith('F'))) {
+      this.help4Shown = true;
       this.setHelpVisible(4, false);
-      this.setHelpVisible(5, true);
     }
 
     if (!this.help6Shown && s1.dataset['i']?.startsWith('F') && s2.dataset['i']?.startsWith('F')) {
       this.help6Shown = true;
-      this.setHelpVisible(5, false);
-      this.setHelpVisible(6, true);
+      this.setHelpVisible(5, true);
     }
   }
 
