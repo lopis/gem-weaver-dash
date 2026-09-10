@@ -17,8 +17,9 @@
   --m3: #a42d92;
   --m4: #6d1e61;
   --m5: #47113f;
-  --b1: #131217;
-  --b2: #13121755;
+  --b1: #0f0c19;
+  --b2: #4e4a5e;
+  --bt: #13121777;
   --w1: #f9f9f9;
 }
 
@@ -452,9 +453,9 @@ section:not(.show) {
 	background-color: var(--bgc);
 	border: 0.3rem solid var(--bgc);
 	box-shadow:
-  5px 5px 0 0 var(--b1),
-  0 0 0 2px var(--b1),
-  -1px -1px 0 0 var(--m2);
+    5px 5px 0 0 var(--b1),
+    0 0 0 2px var(--b1),
+    -1px -1px 0 0 var(--m2);
 	transition: all 100ms ease-in-out;
 	box-sizing: border-box;
 }
@@ -586,7 +587,7 @@ section:not(.show) {
 }
 
 .GK {
-  --bgc: var(--b1);
+  --bgc: var(--b2);
   --bgi: var(--b-GK)
 }
 
@@ -615,7 +616,7 @@ section:not(.show) {
   --bgi: var(--b-HN);
   top: 30%;
   left: 30%;
-  filter: drop-shadow(0px 14px 0px var(--b2));
+  filter: drop-shadow(0px 14px 0px var(--bt));
   animation: sC 1s steps(4) infinite,
     tap 500ms alternate infinite ease-in-out;
   z-index: 3;
@@ -663,9 +664,11 @@ section:not(.show) {
 @keyframes tap {
   from {
     transform: translate(0, 0) rotate(-5deg);
+    filter: drop-shadow(0px 5px 0px var(--bt));
   }
   to {
     transform: translate(5%, 20%) rotate(0deg);
+    filter: drop-shadow(0px 14px 0px var(--bt));
   }
 }
 
@@ -718,7 +721,7 @@ section:not(.show) {
 	height: clamp(1vh, 28vw, 15vh);
 	width: clamp(1vh, 28vw, 15vh);
 	border-radius: 200px;
-  background: var(--bgc, var(--b2));
+  background: var(--bgc, var(--bt));
 	margin: 0.3rem;
 	display: flex;
 	align-items: center;

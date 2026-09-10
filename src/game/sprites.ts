@@ -22,7 +22,7 @@ const gemFill = [
   cyan,
   blue,
   magenta2,
-  black,
+  black + 'dd',
   white,
 ];
 

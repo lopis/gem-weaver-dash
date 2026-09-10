@@ -42,6 +42,8 @@
 5. Combining fruits and gems is possible
 6. White + Color = Color
 
+8. Subtract colors
+
 ## Achievements
 
 Possible ideas for achievements, if we get to that stage...
