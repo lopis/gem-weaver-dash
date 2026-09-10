@@ -96,7 +96,7 @@ export class GameState implements State {
   }
 
   private hideAllHelpTexts() {
-    for (let i = 1; i <= 6; i++) {
+    for (let i = 1; i <= 7; i++) {
       this.setHelpVisible(i, false);
     }
   }
@@ -115,6 +115,10 @@ export class GameState implements State {
 
     if (this.level === 3) {
       this.setHelpVisible(6, true);
+    }
+
+    if (this.level === 6) {
+      this.setHelpVisible(7, true);
     }
   }
 
