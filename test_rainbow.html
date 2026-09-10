@@ -161,26 +161,10 @@
       </p>
 
       <section class="grid" id="tables"></section>
-
-      <section class="notes" id="notes">
-        <div class="note">
-          <h3>Fundamental Rules</h3>
-          <ul>
-            <li>add(A, A) = A</li>
-            <li>sub(A, A) = black</li>
-          </ul>
-        </div>
-        <div class="note">
-          <h3>Rules That Do Not Fit 2-Input Tables</h3>
-          <ul>
-            <li>Sub: red - green - violet = black</li>
-          </ul>
-        </div>
-      </section>
     </main>
 
     <script>
-      const inputs = ["red", "orange", "yellow", "green", "cyan", "blue", "violet"];
+      const inputs = ["red", "orange", "yellow", "green", "cyan", "blue", "violet", "black", "white"];
       const palette = {
         red: "#e63946",
         orange: "#f4a261",
@@ -189,8 +173,8 @@
         cyan: "#00bcd4",
         blue: "#3f51b5",
         violet: "#8e44ad",
-        white: "#ffffff",
         black: "#121212",
+        white: "#ffffff",
         "?": "#f4efe6"
       };
 
@@ -202,95 +186,50 @@
         cyan: "#1f1f1f",
         blue: "#fff",
         violet: "#fff",
-        white: "#1f1f1f",
-        black: "#fff"
+        black: "#fff",
+        white: "#1f1f1f"
       };
 
-      function keyCommutative(a, b) {
-        return [a, b].sort().join("|");
+      const colorIds = {
+        red: 0,
+        orange: 1,
+        yellow: 2,
+        green: 3,
+        cyan: 4,
+        blue: 5,
+        violet: 6,
+        black: 7,
+        white: 8
+      };
+
+      const addLUT = "0112666111236811233382233444633444566344566884566";
+      const subLUT = "7700000270111127722223347233444573455556745666007";
+      const complementLUT = [3, 5, 6, 0, 1, 1, 2, 8, 7];
+
+      function lookupAdd(left, right) {
+        const a = colorIds[left];
+        const b = colorIds[right];
+
+        if (a === 7) return right;
+        if (b === 7) return left;
+        if (a === 8 || b === 8) return "white";
+
+        const result = addLUT.charCodeAt(a * 7 + b) - 48;
+        return Object.keys(colorIds)[result] ?? "?";
       }
 
-      function keyDirectional(a, b) {
-        return `${a}|${b}`;
+      function lookupSub(left, right) {
+        const a = colorIds[left];
+        const b = colorIds[right];
+
+        if (a === 7) return "black";
+        if (a === 8) return Object.keys(colorIds)[complementLUT[b]] ?? "?";
+        if (b === 8) return "black";
+        if (b === 7) return left;
+
+        const result = subLUT.charCodeAt(a * 7 + b) - 48;
+        return Object.keys(colorIds)[result] ?? "?";
       }
-
-      function makeRuleMap(pairs, isDirectional = false) {
-        const map = new Map();
-        for (const [a, b, out] of pairs) {
-          const k = isDirectional ? keyDirectional(a, b) : keyCommutative(a, b);
-          map.set(k, out);
-        }
-        return map;
-      }
-
-      const addMap = makeRuleMap([
-        ["red", "yellow", "orange"],
-        ["red", "blue", "violet"],
-        ["red", "orange", "orange"],
-        ["red", "violet", "violet"],
-        ["blue", "yellow", "green"],
-        ["blue", "green", "cyan"],
-        ["green", "red", "yellow"],
-        ["green", "orange", "yellow"],
-        ["yellow", "orange", "orange"],
-        ["yellow", "green", "green"],
-        ["cyan", "yellow", "green"],
-        ["cyan", "green", "cyan"],
-        ["cyan", "orange", "green"],
-        ["blue", "orange", "violet"],
-        ["blue", "violet", "violet"],
-        ["violet", "orange", "red"],
-        ["violet", "yellow", "red"],
-        ["violet", "green", "cyan"],
-        ["violet", "cyan", "blue"],
-        ["blue", "cyan", "cyan"],
-        ["red", "cyan", "violet"]
-      ]);
-
-      const subMap = makeRuleMap([
-        ["orange", "yellow", "red"],
-        ["red", "orange", "black"],
-        ["yellow", "orange", "yellow"],
-        ["orange", "red", "yellow"],
-        ["red", "yellow", "orange"],
-        ["yellow", "red", "black"],
-        ["cyan", "red", "cyan"],
-        ["blue", "orange", "blue"],
-        ["blue", "yellow", "blue"],
-        ["blue", "cyan", "green"],
-        ["blue", "violet", "red"],
-        ["yellow", "cyan", "yellow"],
-        ["yellow", "blue", "yellow"],
-        ["yellow", "violet", "yellow"],
-        ["red", "violet", "blue"],
-        ["orange", "violet", "blue"],
-        ["orange", "green", "red"],
-        ["orange", "cyan", "red"],
-        ["orange", "blue", "orange"],
-        ["violet", "blue", "red"],
-        ["violet", "red", "blue"],
-        ["violet", "orange", "blue"],
-        ["violet", "yellow", "red"],
-        ["green", "yellow", "blue"],
-        ["cyan", "green", "blue"],
-        ["cyan", "blue", "green"],
-        ["red", "cyan", "violet"],
-        ["green", "red", "green"],
-        ["blue", "red", "blue"],
-        ["red", "green", "red"],
-        ["red", "blue", "red"],
-        ["green", "blue", "yellow"],
-        ["green", "violet", "yellow"],
-        ["violet", "green", "cyan"],
-        ["violet", "cyan", "blue"],
-        ["blue", "green", "black"],
-        ["green", "orange", "black"],
-        ["yellow", "green", "black"],
-        ["green", "cyan", "black"],
-        ["cyan", "orange", "cyan"],
-        ["cyan", "yellow", "cyan"],
-        ["cyan", "violet", "blue"]
-      ], true);
 
       function paint(el, token) {
         const bg = palette[token];
@@ -305,18 +244,17 @@
         el.textContent = token;
       }
 
-      function getResult(op, a, b, map) {
+      function getResult(op, a, b) {
         if (a === b) {
           return op === "add" ? a : "black";
         }
-        if (op === "sub") {
-          const value = map.get(keyDirectional(a, b));
-          return value || "?";
+        if (op === "add") {
+          return lookupAdd(a, b);
         }
-        return map.get(keyCommutative(a, b));
+        return lookupSub(a, b);
       }
 
-      function createTable(title, op, map) {
+      function createTable(title, op) {
         const panel = document.createElement("article");
         panel.className = "panel";
         panel.innerHTML = `<h2>${title}</h2><div class="table-wrap"></div>`;
@@ -349,7 +287,7 @@
 
           for (const colToken of inputs) {
             const td = document.createElement("td");
-            const out = getResult(op, rowToken, colToken, map);
+            const out = getResult(op, rowToken, colToken);
             paint(td, out);
             tr.appendChild(td);
           }
@@ -363,13 +301,13 @@
       }
 
       const tables = document.getElementById("tables");
-      tables.appendChild(createTable("Add", "add", addMap));
-      tables.appendChild(createTable("Sub (row - column)", "sub", subMap));
+      tables.appendChild(createTable("Add", "add"));
+      tables.appendChild(createTable("Sub (row - column)", "sub"));
 
       const note = document.getElementById("notes");
       const chips = document.createElement("div");
       chips.className = "chips";
-      for (const name of [...inputs, "white", "black"]) {
+      for (const name of ["red", "orange", "yellow", "green", "cyan", "blue", "violet", "black", "white"]) {
         const chip = document.createElement("span");
         chip.className = "chip";
         chip.style.background = palette[name];
@@ -378,6 +316,10 @@
         chips.appendChild(chip);
       }
       note.appendChild(chips);
+
+      const rules = document.createElement("div");
+      rules.className = "note";
+      note.appendChild(rules);
     </script>
   </body>
 </html>

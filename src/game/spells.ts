@@ -61,11 +61,11 @@ export const lookupAdd = (
   const a = left;
   const b = right;
 
-  // Black + any = black
-  if (a === CK || b === CK) return CK;
-  // White + any = the other color
-  if (a === CW) return b;
-  if (b === CW) return a;
+  // Black is the identity for add.
+  if (a === CK) return b;
+  if (b === CK) return a;
+  // White absorbs all add inputs.
+  if (a === CW || b === CW) return CW;
 
   return (addLUT.charCodeAt(a * LUT_W + b) - 48) as ColorId;
 };
@@ -77,13 +77,13 @@ export const lookupSub = (
   const a = left;
   const b = right;
 
-  // Black - any = complement
-  if (a === CK) return complementLUT[b];
-  // White - any = white
-  if (a === CW) return CW;
-  // Any - white = any
-  if (b === CW) return a;
-  // Any - black = any
+  // Black - any = black.
+  if (a === CK) return CK;
+  // White - any = complement.
+  if (a === CW) return complementLUT[b];
+  // Any - white = black.
+  if (b === CW) return CK;
+  // Any - black = any.
   if (b === CK) return a;
 
   return (subLUT.charCodeAt(a * LUT_W + b) - 48) as ColorId;
