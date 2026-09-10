@@ -162,8 +162,9 @@ dialog p {
 }
 
 dialog label {
-  flex-grow: 1;
-  text-align: left;
+	display: flex;
+	width: 100%;
+	justify-content: space-between;
 }
 
 [type=checkbox] {
@@ -461,10 +462,11 @@ section:not(.show) {
 }
 
 #iv i[h] {
-  border-color: var(--m4);
-  box-shadow: 5px 5px 0 0 var(--m5), -1px -1px 0 0 var(--m2);
-	background-color: var(--m4);
+  border-color: var(--bgc);
+  box-shadow: 5px 5px 0 0 var(--m5);
+	background-color: var(--bgc);
   background-size: 0;
+  opacity: 0.5;
 }
 
 /* #iv i.selected:not([h]) {
@@ -482,7 +484,7 @@ section:not(.show) {
   box-shadow: 0 0 10px var(--bgc);
 }
 
-#iv i:nth-child(n+8) {
+#iv i:nth-child(n+8):nth-child(-n + 16) {
   z-index: 4;
 }
 
@@ -809,7 +811,6 @@ section:not(.show) {
 
 #mn {
   align-items: center;
-  padding-bottom: 20rem;
   gap: 1rem;
 }
 
@@ -887,9 +888,9 @@ button.hide {
     aspect-ratio: 1;
   }
 
-  #gd > i {
+  /* #gd > i {
     font-size: 8vw;
-  }
+  } */
 
   #tl {
     flex-direction: column;
@@ -905,7 +906,7 @@ button.hide {
   }
 
   .skf {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
   }
 }
 

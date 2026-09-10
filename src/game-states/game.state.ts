@@ -48,6 +48,7 @@ export class GameState implements State {
     this.hideAllHelpTexts();
     addTimeEvent(() => this.initHelpTexts(), 0, 0, 500);
 
+    sub.classList.toggle('hide', this.level < 6);
     setSketchText(lvn, String(this.level + 1));
 
     on(GAME_EVENT_SPELL_ADD, () => {
