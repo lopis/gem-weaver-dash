@@ -855,7 +855,7 @@ button.hide {
 }
 
 [hp="2"], [hp="4"] {
-	grid-column: 3 / 3 span;
+	grid-column: 3 / 4 span;
 	grid-row: 10;
 }
 
