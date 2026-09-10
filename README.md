@@ -41,8 +41,8 @@
 4. Combining gems is also possible; some items are not important
 5. Combining fruits and gems is possible
 6. White + Color = Color
-
-8. Subtract colors
+7. Subtract colors easy
+8. Subtract + Add colors
 
 ## Achievements
 

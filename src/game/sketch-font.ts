@@ -34,7 +34,7 @@ const HTML_ASSET_PADDING = 5 * HTML_RENDER_SCALE;
 // The ununsed glyths are commented out
 const glyphEntries: readonly GlyphEntry[] = [
   ["A", "m1.1 15 7.4-13 7.4 13-2.5-4.5h-9.8"],
-  // ["B", "m4 15v-13c8-3 13 7 2 7 11-1 9 10-2 6z"],
+  ["B", "m4 15v-13c8-3 13 7 2 7 11-1 9 10-2 6z"],
   ["C", "m14 1.9c-15 0-15 13 0 13"],
   ["D", "m2.9 1.9c15 0 15 13 0 13z"],
   ["E", "m13 1.9h-9.8v6.7h4.9-4.9v6.7h9.8"],
@@ -173,9 +173,9 @@ export const setSketchText = (el: HTMLElement, text: string): void => {
     const asset = glyphAssets.get(ch)!;
 
     // DEBUG.
-    // if(!asset) {
-    //   console.error(`Missing glyth for:`, ch);
-    // }
+    if(!asset) {
+      console.error(`Missing glyth for:`, ch);
+    }
 
     const glyph = document.createElement("span");
     glyph.className = HTML_GLYPH_CLASS;
