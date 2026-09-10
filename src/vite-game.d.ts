@@ -24,7 +24,6 @@ let nm: HTMLElement
 
 // TOP
 let sd: HTMLElement
-let ss: HTMLElement
 let lvn: HTMLElement
 
 // SVG

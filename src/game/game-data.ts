@@ -17,7 +17,6 @@ export const gameData = {
 
 const renderStats = () => {
   setSketchText(sd, String(gameData.dash));
-  setSketchText(ss, String(gameData.spells));
 };
 
 export const initGameData = (startLevel: number, initialInventory: GemItem[] = []) => {
