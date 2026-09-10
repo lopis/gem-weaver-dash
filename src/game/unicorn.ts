@@ -59,6 +59,7 @@ export class Unicorn {
     this.moving = false;
     this.dead = true;
     u.classList.add('dead');
+    nav.classList.add('dead');
   }
 
   update(delta: number) {

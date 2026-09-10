@@ -33,6 +33,7 @@ export class GameState implements State {
   constructor(private readonly level: number) {}
 
   onEnter() {
+    nav.classList.remove('dead');
     gm.classList.toggle('show', true);
     const level = decodeLevel(this.level);
     initGameData(this.level, level.initialInventory);

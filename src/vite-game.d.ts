@@ -19,6 +19,7 @@ let win: HTMLElement
 let redo: HTMLElement
 let conf: HTMLElement
 let lm: HTMLMeterElement
+let nav: HTMLElement
 
 // TOP
 let sd: HTMLElement
