@@ -210,6 +210,7 @@ dialog label {
   line-height: 1;
   vertical-align: middle;
   font-size: 1.8rem;
+  gap: 0.05em;
 }
 
 .skf-g {
@@ -907,6 +908,7 @@ button.hide {
 
   .skf {
     font-size: 1.2rem;
+    gap: 0.08em;
   }
 
   button.hide {
