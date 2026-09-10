@@ -908,6 +908,10 @@ button.hide {
   .skf {
     font-size: 1.2rem;
   }
+
+  button.hide {
+    display: none;
+  }
 }
 
 @media (max-width: 400px) and (max-height: 725px) {
