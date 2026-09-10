@@ -479,8 +479,11 @@ section:not(.show) {
 }
 
 #iv.r.animate i.gain:not([h]) {
-  z-index: 4;
   box-shadow: 0 0 10px var(--bgc);
+}
+
+#iv i:nth-child(n+8) {
+  z-index: 4;
 }
 
 @keyframes inv-gain {
