@@ -82,6 +82,7 @@ export class GameState implements State {
     iv.classList.remove('animate');
     win.classList.add('hide');
     win.classList.remove('animate');
+    nm.classList.remove('animate');
     gameData.onVictory = null;
     clearEvents();
   }
