@@ -57,6 +57,7 @@ Possible ideas for achievements, if we get to that stage...
 
 ## TODO
 
+* BUG: clicing on the spaces should remove the item
 * BUG: Help text too big or out of bounds on mobile
 * Hide subtract button until it's needed
 * Turn text rendering from background image based to masks
