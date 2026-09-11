@@ -34,6 +34,7 @@ export class GameState implements State {
   onEnter() {
     nav.classList.remove('dead');
     gm.classList.toggle('show', true);
+    this.clearSpellSpaces();
     const level = decodeLevel(this.level);
     initGameData(this.level, level.initialInventory);
     initInventoryView();
@@ -90,6 +91,25 @@ export class GameState implements State {
   onUpdate(timeElapsed: number) {
     this.grid.update(timeElapsed);
     this.updateHelpTexts();
+  }
+
+  private clearSpellSpaces() {
+    const spaces = [s1, s2, s3];
+    for (const space of spaces) {
+      const item = space.dataset['i'];
+      if (item) {
+        space.classList.remove(item);
+      }
+
+      const icon = space.querySelector('i') as HTMLElement | null;
+      if (icon) {
+        icon.className = '';
+      }
+
+      delete space.dataset['i'];
+      delete space.dataset['c'];
+      space.classList.remove('animate');
+    }
   }
 
   private setHelpVisible(helpId: number, visible: boolean) {

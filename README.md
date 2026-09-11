@@ -37,7 +37,7 @@
 
 1. Collect gems or 7 rainbow colors
 2. Use ADD to combina 2 colors
-3. Combina a color with itself to get a gem of the same color
+3. Combine a color with itself to get a gem of the same color
 4. Combining gems is also possible; some items are not important
 5. Combining fruits and gems is possible
 6. Black + any color = Color
@@ -45,7 +45,6 @@
 8. Subtract + Add colors
 9. Complement colors using white
 10. Complement + addition
-
 
 ## Achievements
 

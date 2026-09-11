@@ -831,7 +831,7 @@ section:not(.show) {
 
 .btn:active {
   box-shadow: 0.1rem 0.1rem 0 0rem var(--m3);
-  transform: translate(0.4rem, 0.4rem);
+  transform: translate(8%, 8%);
 }
 
 [hp] {
@@ -872,6 +872,10 @@ button.hide {
 [hp="6"] {
 	grid-column: 2 / 3 span;
 	grid-row: 2;
+}
+
+[hp="7"] {
+	justify-self: end;
 }
 
 @media (max-width: 600px) {
