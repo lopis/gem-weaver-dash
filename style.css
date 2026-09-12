@@ -75,6 +75,9 @@ main {
 
 h1 {
   position: relative;
+  display: flex;
+  justify-content: center;
+  gap: 1em;
   margin: 0rem 0 2rem;
   text-align: center;
   color: var(--b1);

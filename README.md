@@ -1,4 +1,4 @@
-# Gem Weaver Dash
+# Hue Nicorn
 
 ## Game Rules
 
