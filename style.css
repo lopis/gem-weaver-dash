@@ -76,6 +76,7 @@ main {
 h1 {
   position: relative;
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 1em;
   margin: 0rem 0 2rem;
