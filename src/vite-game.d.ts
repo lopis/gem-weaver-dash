@@ -18,7 +18,7 @@ let u: HTMLElement
 let win: HTMLElement
 let redo: HTMLElement
 let conf: HTMLElement
-let lm: HTMLMeterElement
+let lm: HTMLProgressElement
 let nav: HTMLElement
 let nm: HTMLElement
 

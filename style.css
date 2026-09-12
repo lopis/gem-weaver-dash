@@ -953,17 +953,27 @@ button.hide {
   }
 }
 
-meter,
-meter::-webkit-meter-bar {
+progress {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
   border: none;
   height: 4rem;
   width: 90%;
   margin: 0 auto;
   background: var(--m5);
+  border-radius: 999px;
+  overflow: hidden;
 }
 
-meter::-webkit-meter-optimum-value,
-meter::-moz-meter-bar {
+progress::-webkit-progress-bar {
+  background: var(--m5);
+  border-radius: 999px;
+}
+
+progress::-webkit-progress-value,
+progress::-moz-progress-bar {
   background: var(--m1);
+  border-radius: 999px;
 }
 
