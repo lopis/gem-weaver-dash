@@ -957,6 +957,8 @@ progress {
   -webkit-appearance: none;
   appearance: none;
   display: block;
+  color: var(--m1);
+  accent-color: var(--m1);
   border: none;
   height: 4rem;
   width: 90%;
@@ -967,13 +969,13 @@ progress {
 }
 
 progress::-webkit-progress-bar {
-  background: var(--m5);
+  background-color: var(--m5);
   border-radius: 999px;
 }
 
 progress::-webkit-progress-value,
 progress::-moz-progress-bar {
-  background: var(--m1);
+  background-color: var(--m1) !important;
   border-radius: 999px;
 }
 
