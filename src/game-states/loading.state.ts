@@ -5,6 +5,7 @@ import { initMouse } from '@/game/mouse';
 import { applySketchTextFromDataAttr, initSketchFont } from '@/game/sketch-font';
 import { initSpellListener } from '@/game/spells';
 import { initSprites } from '@/game/sprites';
+import { initWavedash, updateWavedashLoadProgress } from '@/platform/wavedash';
 import { menuState } from './menu.state';
 
 const nextFrame = () => new Promise<void>((resolve) => {
@@ -26,17 +27,24 @@ class LoadingState implements State {
       initSketchFont,
       applySketchTextFromDataAttr,
       applySpellIcons,
-      () => gameStateMachine.setState(menuState),
     ];
+
+    lm.max = tasks.length;
+    updateWavedashLoadProgress(0);
 
     // Let loading UI paint before and between expensive init work.
     await nextFrame();
 
-    for (const task of tasks) {
+    for (let i = 0; i < tasks.length; i++) {
+      const task = tasks[i];
       task();
       lm.value++;
+      updateWavedashLoadProgress((i + 1) / tasks.length);
       await nextFrame();
     }
+
+    initWavedash();
+    gameStateMachine.setState(menuState);
   }
 
   onLeave() {
