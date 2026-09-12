@@ -14,6 +14,9 @@ import { minify } from 'terser';
 import { ModuleKind, ScriptTarget, transpile } from 'typescript';
 
 export default defineConfig(({ command, mode }) => {
+  const useRoadroller = command === 'build' && process.env.USE_ROADROLLER === 'true';
+  const debugBuild = command === 'build';
+
   const config = {
     server: {
       port: 3000,
@@ -33,7 +36,8 @@ export default defineConfig(({ command, mode }) => {
     config.base = '';
     // @ts-ignore
     config.build = {
-      minify: 'terser',
+      minify: false,
+      sourcemap: true,
       target: 'es2022',
       modulePreload: { polyfill: false },
       assetsInlineLimit: 800,
@@ -45,10 +49,12 @@ export default defineConfig(({ command, mode }) => {
           assetFileNames: `[name].[ext]`
         },
       },
-      terserOptions: defaultTerserOptions,
+      terserOptions: debugBuild ? undefined : defaultTerserOptions,
     };
     // @ts-ignore
-    config.plugins = [typescriptPlugin(), workletPlugin(), roadrollerPlugin(), ectPlugin()];
+    config.plugins = useRoadroller
+      ? [typescriptPlugin(), workletPlugin(), roadrollerPlugin(), ectPlugin()]
+      : [typescriptPlugin(), workletPlugin()];
   }
 
   return config;
@@ -141,16 +147,11 @@ function workletPlugin(): Plugin {
         const jsCode = transpile(workletContent, {
           target: ScriptTarget.ES2022,
           module: ModuleKind.ES2022,
-          removeComments: true,
+          removeComments: false,
           strict: true,
         });
 
-        const minified = await minify(jsCode, defaultTerserOptions);
-        if (!minified.code) {
-          throw new Error('Terser minification failed for worklet');
-        }
-
-        await fs.writeFile(path.resolve(__dirname, 'dist/music-worklet.js'), minified.code);
+        await fs.writeFile(path.resolve(__dirname, 'dist/music-worklet.js'), jsCode);
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         console.error('Worklet processing error:', message);

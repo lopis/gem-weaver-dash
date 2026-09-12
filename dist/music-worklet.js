@@ -1,1 +1,79 @@
-const t=4/sampleRate;let e=!0,o=[],s=0,r=[],n=0,c=0,a=0,l=0,i=1,f=0,h=0;class u extends AudioWorkletProcessor{constructor(){super(),this.port.onmessage=t=>{const c=t.data;Array.isArray(c)?[o,s,r,n]=c:(e=1!==c,i=e?1:0)}}process(u,M){const p=M[0]?.[0];if(!p)return!0;if(!e&&5e-4>l)return p.fill(0),!0;for(let e=0;p.length>e;e++){l+=.002*(i-l);let M=0;for(let t=0;u.length>t;t++)M+=u[t]?.[0]?.[e]||0;const m=a%s;let d=0;for(let e=0;o.length>e;e+=3){const s=o[e],r=o[e+1];if(s>m||m>=r+16)continue;const n=(m-s)/t;d+=Math.sin(c*o[e+2]*2*Math.PI+.04*Math.sin(.008*n))*Math.min(1,.002*n)*Math.exp(1e-5*-n+(m>r?-(m-r)/t*15e-5:0))}if(M+=.12*d,a>=64){const t=(a-64)%(n+1);if(n>t){const e=2*Math.random()-1;let o=0;for(let s=0;r.length>s;s+=3){const n=r[s];if(n>t||t>=r[s+1])continue;const c=r[s+2]>.5,a=Math.exp(-(t-n)*(c?14:20));c?(f+=.085*(e-f),o+=f*a):(h+=.58*(e-h),o+=(e-h)*a*.75)}M+=.36*o}}const A=M*l;p[e]=-1>A?-1:A>1?1:A,c+=1/sampleRate,a+=t}return!0}}registerProcessor("mp",u);
+"use strict";
+/// <reference lib="webworker" />
+/// <reference lib="dom" />
+const beatIncrement = 4 / sampleRate;
+let play = true, melodyNotes = [], melodyLengthBeats = 0, beatNotes = [], beatLengthBeats = 0, seconds = 0, beat = 0, masterGain = 0, targetGain = 1, drumLowState = 0, drumHighState = 0;
+class MpProcessor extends AudioWorkletProcessor {
+    constructor() {
+        super();
+        this.port.onmessage = (event) => {
+            const message = event.data;
+            if (Array.isArray(message)) {
+                [melodyNotes, melodyLengthBeats, beatNotes, beatLengthBeats] = message;
+                return;
+            }
+            play = message !== 1;
+            targetGain = play ? 1 : 0;
+        };
+    }
+    process(inputs, outputs) {
+        const output = outputs[0]?.[0];
+        if (!output) {
+            return true;
+        }
+        if (!play && masterGain < 0.0005) {
+            output.fill(0);
+            return true;
+        }
+        for (let i = 0; i < output.length; i++) {
+            masterGain += (targetGain - masterGain) * 0.002;
+            let mixed = 0;
+            for (let j = 0; j < inputs.length; j++)
+                mixed += inputs[j]?.[0]?.[i] || 0;
+            const localBeat = beat % melodyLengthBeats;
+            let melody = 0;
+            for (let k = 0; k < melodyNotes.length; k += 3) {
+                const startBeat = melodyNotes[k];
+                const endBeat = melodyNotes[k + 1];
+                if (localBeat < startBeat || localBeat >= endBeat + 16) {
+                    continue;
+                }
+                const noteAgeInSamples = (localBeat - startBeat) / beatIncrement;
+                melody += Math.sin(seconds * melodyNotes[k + 2] * (Math.PI * 2) + Math.sin(noteAgeInSamples * 0.008) * 0.04)
+                    * Math.min(1, noteAgeInSamples * 0.002)
+                    * Math.exp(-noteAgeInSamples * 0.00001 + (localBeat > endBeat ? -(localBeat - endBeat) / beatIncrement * 0.00015 : 0));
+            }
+            mixed += melody * 0.12;
+            if (beat >= 64) {
+                const localBeat = (beat - 64) % (beatLengthBeats + 1);
+                if (localBeat < beatLengthBeats) {
+                    const white = Math.random() * 2 - 1;
+                    let drum = 0;
+                    for (let k = 0; k < beatNotes.length; k += 3) {
+                        const startBeat = beatNotes[k];
+                        if (localBeat < startBeat || localBeat >= beatNotes[k + 1]) {
+                            continue;
+                        }
+                        const isLow = beatNotes[k + 2] > 0.5;
+                        const envelope = Math.exp(-(localBeat - startBeat) * (isLow ? 14 : 20));
+                        if (isLow) {
+                            drumLowState += (white - drumLowState) * 0.085;
+                            drum += drumLowState * envelope;
+                        }
+                        else {
+                            drumHighState += (white - drumHighState) * 0.58;
+                            drum += (white - drumHighState) * envelope * 0.75;
+                        }
+                    }
+                    mixed += drum * 0.36;
+                }
+            }
+            const sample = mixed * masterGain;
+            output[i] = sample < -1 ? -1 : sample > 1 ? 1 : sample;
+            seconds += 1 / sampleRate;
+            beat += beatIncrement;
+        }
+        return true;
+    }
+}
+registerProcessor('mp', MpProcessor);

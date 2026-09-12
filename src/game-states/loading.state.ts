@@ -32,19 +32,27 @@ class LoadingState implements State {
     lm.max = tasks.length;
     updateWavedashLoadProgress(0);
 
-    // Let loading UI paint before and between expensive init work.
-    await nextFrame();
-
-    for (let i = 0; i < tasks.length; i++) {
-      const task = tasks[i];
-      task();
-      lm.value++;
-      updateWavedashLoadProgress((i + 1) / tasks.length);
+    try {
+      // Let loading UI paint before and between expensive init work.
       await nextFrame();
-    }
 
-    initWavedash();
-    gameStateMachine.setState(menuState);
+      for (let i = 0; i < tasks.length; i++) {
+        const task = tasks[i];
+        task();
+        lm.value++;
+        updateWavedashLoadProgress((i + 1) / tasks.length);
+        await nextFrame();
+      }
+
+      gameStateMachine.setState(menuState);
+    } catch (error) {
+      console.error('Game bootstrap failed:', error);
+      throw error;
+    } finally {
+      // Always complete WaveDash load lifecycle to avoid platform loader hangs.
+      updateWavedashLoadProgress(1);
+      initWavedash();
+    }
   }
 
   onLeave() {
