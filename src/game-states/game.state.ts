@@ -101,8 +101,11 @@ export class GameState implements State {
         space.classList.remove(item);
       }
 
+      space.removeAttribute('style');
+
       const icon = space.querySelector('i') as HTMLElement | null;
       if (icon) {
+        icon.removeAttribute('style');
         icon.className = '';
       }
 

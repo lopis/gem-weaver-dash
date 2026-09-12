@@ -276,6 +276,37 @@
       font-weight: 700;
     }
 
+    .solution {
+      margin: 0;
+      padding-left: 1.2rem;
+      display: grid;
+      gap: 0.28rem;
+      font-size: 0.82rem;
+      line-height: 1.35;
+    }
+
+    .solution li {
+      color: #fff7ec;
+    }
+
+    .complexity {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.85rem;
+      color: #fff7ec;
+    }
+
+    .complexity input {
+      flex: 1;
+    }
+
+    .complexity-output {
+      min-width: 5.5ch;
+      text-align: right;
+      font-weight: 700;
+    }
+
     code {
       background: #ffffff2e;
       border: 1px solid #ffffff35;
@@ -311,6 +342,11 @@
           <button id="fillBtn" class="action alt" type="button">Fill Empty</button>
           <button id="generateBtn" class="action" type="button">Generate</button>
         </div>
+        <div class="complexity" style="margin-top: 0.6rem;">
+          <span>Steps</span>
+          <input id="complexity" type="range" min="0" max="8" value="4" />
+          <output id="complexityValue" class="complexity-output">4</output>
+        </div>
       </div>
 
       <div>
@@ -329,6 +365,11 @@
       </div>
 
       <div id="error" class="error"></div>
+
+      <div>
+        <div class="label">Solution</div>
+        <ol id="solution" class="solution"></ol>
+      </div>
     </aside>
   </main>
 
@@ -389,6 +430,9 @@
     const initialInventoryEl = document.getElementById("initialInventory");
     const encodedEl = document.getElementById("encoded");
     const errorEl = document.getElementById("error");
+    const solutionEl = document.getElementById("solution");
+    const complexityEl = document.getElementById("complexity");
+    const complexityValueEl = document.getElementById("complexityValue");
 
     const encodeBtn = document.getElementById("encodeBtn");
     const decodeBtn = document.getElementById("decodeBtn");
@@ -415,41 +459,67 @@
 
     const GEM_BY_COLOR = ["GR", "GO", "GY", "GG", "GC", "GB", "GV", "GK", "GW"];
     const FRUIT_BY_COLOR = ["FR", "FO", "FY", "FG", "FC", "FB", "FV"];
+    const OP_NAME = { add: "ADD", sub: "SUB" };
 
-    const ADD_LUT = [
-      [0, 1, 1, 2, 6, 6, 6],
-      [1, 1, 1, 2, 3, 6, 8],
-      [1, 1, 2, 3, 3, 3, 8],
-      [2, 2, 3, 3, 4, 4, 4],
-      [6, 3, 3, 4, 4, 4, 5],
-      [6, 6, 3, 4, 4, 5, 6],
-      [6, 8, 8, 4, 5, 6, 6],
-    ];
+    const LUT_W = 7;
+    const COMPLEMENT_LUT = [CG, CB, CV, CR, CO, CO, CY, CW, CK];
+    const ADD_LUT = "0112666111236811233382233444633444566344566884566";
+    const SUB_LUT = "7000000270111122722223347223444573455556744666067";
 
-    const SUB_LUT = [
-      [7, 0, 0, 0, 0, 0, 0],
-      [2, 7, 0, 1, 1, 1, 1],
-      [2, 2, 7, 2, 2, 2, 2],
-      [3, 3, 4, 7, 2, 2, 3],
-      [4, 4, 4, 5, 7, 3, 4],
-      [5, 5, 5, 5, 6, 7, 4],
-      [4, 6, 6, 6, 0, 6, 7],
-    ];
+    function lookupAdd(left, right) {
+      if (left === CK) return right;
+      if (right === CK) return left;
+      if (left === CW || right === CW) return CW;
+      return ADD_LUT.charCodeAt(left * LUT_W + right) - 48;
+    }
+
+    function lookupSub(left, right) {
+      if (left === CK) return CK;
+      if (left === CW) return COMPLEMENT_LUT[right];
+      if (right === CW) return CK;
+      if (right === CK) return left;
+      return SUB_LUT.charCodeAt(left * LUT_W + right) - 48;
+    }
 
     const TOKEN_TO_CODE = new Map(ELEMENTS.map(([token], i) => [token, i + 1]));
 
-    const REVERSE_LUT = (() => {
+    const REVERSE_SPELLS = (() => {
       const out = Array.from({ length: 9 }, () => []);
-      for (let left = 0; left <= 6; left += 1) {
-        for (let right = 0; right <= 6; right += 1) {
-          const addResult = ADD_LUT[left][right];
-          out[addResult].push([left, right]);
-          const subResult = SUB_LUT[left][right];
-          out[subResult].push([left, right]);
+      for (let left = 0; left <= CW; left += 1) {
+        for (let right = 0; right <= CW; right += 1) {
+          out[lookupAdd(left, right)].push({ kind: "add", left, right });
+          out[lookupSub(left, right)].push({ kind: "sub", left, right });
         }
       }
       return out;
     })();
+
+    function clearSolution() {
+      solutionEl.replaceChildren();
+    }
+
+    function getComplexity() {
+      return Number(complexityEl.value) || 0;
+    }
+
+    function syncComplexityLabel() {
+      complexityValueEl.value = String(getComplexity());
+      complexityValueEl.textContent = String(getComplexity());
+    }
+
+    function renderSolution(plan) {
+      clearSolution();
+
+      const ingredientLine = document.createElement("li");
+      ingredientLine.textContent = `Inputs: ${plan.tokens.join(", ")}`;
+      solutionEl.appendChild(ingredientLine);
+
+      for (const step of plan.steps) {
+        const item = document.createElement("li");
+        item.textContent = `${GEM_BY_COLOR[step.target]} = ${GEM_BY_COLOR[step.left]} ${OP_NAME[step.kind]} ${GEM_BY_COLOR[step.right]}`;
+        solutionEl.appendChild(item);
+      }
+    }
 
     function getInitialInventoryMask() {
       let mask = 0;
@@ -504,29 +574,50 @@
       return arr;
     }
 
-    function generateMutationItems() {
-      const colors = [CR, CO, CY, CG, CC, CB, CV];
-      const expansionCount = randInt(3, 5);
+    function collectSolutionSteps(nodes, steps) {
+      for (const node of nodes) {
+        if (!node.kind) {
+          continue;
+        }
+        collectSolutionSteps([node.left, node.right], steps);
+        steps.push({
+          kind: node.kind,
+          left: node.left.color,
+          right: node.right.color,
+          target: node.color,
+        });
+      }
+    }
+
+    function generateMutationPlan() {
+      const roots = [CR, CO, CY, CG, CC, CB, CV, CK, CW].map((color) => ({ color }));
+      const leaves = [...roots];
+      const expansionCount = Math.min(getComplexity(), CELL_COUNT - roots.length);
 
       for (let i = 0; i < expansionCount; i += 1) {
-        const pickIndex = Math.floor(Math.random() * colors.length);
-        const target = colors[pickIndex];
-        const reversePairs = REVERSE_LUT[target];
+        const pickIndex = Math.floor(Math.random() * leaves.length);
+        const target = leaves[pickIndex];
+        const reversePairs = REVERSE_SPELLS[target.color];
         if (!reversePairs.length) {
           continue;
         }
 
         const pair = pickOne(reversePairs);
-        colors.splice(pickIndex, 1, pair[0], pair[1]);
+        const left = { color: pair.left };
+        const right = { color: pair.right };
+        target.kind = pair.kind;
+        target.left = left;
+        target.right = right;
+        leaves.splice(pickIndex, 1, left, right);
       }
 
-      const selectedCount = randInt(1, colors.length);
-      const selectedIndexes = shuffleInPlace([...Array(colors.length).keys()]).slice(0, selectedCount);
+      const selectedCount = randInt(1, leaves.length);
+      const selectedIndexes = shuffleInPlace([...Array(leaves.length).keys()]).slice(0, selectedCount);
       const selectedSet = new Set(selectedIndexes);
       const tokens = [];
 
-      for (let i = 0; i < colors.length; i += 1) {
-        const color = colors[i];
+      for (let i = 0; i < leaves.length; i += 1) {
+        const color = leaves[i].color;
         if (selectedSet.has(i) && color >= CR && color <= CV) {
           const fruit = FRUIT_BY_COLOR[color];
           tokens.push(fruit, fruit, fruit);
@@ -535,7 +626,9 @@
         }
       }
 
-      return tokens;
+      const steps = [];
+      collectSolutionSteps(roots, steps);
+      return { tokens, steps };
     }
 
     function placeGeneratedItemsRandom(tokens) {
@@ -550,14 +643,62 @@
         throw new Error(`Not enough empty cells (${tokens.length} items, ${available.length} empty).`);
       }
 
-      shuffleInPlace(available);
-      for (let i = 0; i < tokens.length; i += 1) {
-        const token = tokens[i];
+      const groups = new Map();
+      for (const token of tokens) {
+        const list = groups.get(token);
+        if (list) {
+          list.push(token);
+        } else {
+          groups.set(token, [token]);
+        }
+      }
+
+      const remaining = new Set(available);
+      const neighborsOf = (index) => {
+        const x = index % WIDTH;
+        const y = (index / WIDTH) | 0;
+        const out = [];
+        if (x > 0) out.push(index - 1);
+        if (x + 1 < WIDTH) out.push(index + 1);
+        if (y > 0) out.push(index - WIDTH);
+        if (y + 1 < HEIGHT) out.push(index + WIDTH);
+        return shuffleInPlace(out);
+      };
+
+      const takeAny = () => {
+        const cells = [...remaining];
+        return cells[Math.floor(Math.random() * cells.length)];
+      };
+
+      const takeNear = (cluster) => {
+        const frontier = [];
+        for (const index of cluster) {
+          for (const next of neighborsOf(index)) {
+            if (remaining.has(next) && !frontier.includes(next)) {
+              frontier.push(next);
+            }
+          }
+        }
+        return frontier.length ? pickOne(frontier) : takeAny();
+      };
+
+      const entries = [...groups.entries()];
+      shuffleInPlace(entries);
+      entries.sort((a, b) => b[1].length - a[1].length);
+
+      for (const [token, group] of entries) {
         const code = TOKEN_TO_CODE.get(token);
         if (!code) {
           throw new Error(`Unknown token: ${token}`);
         }
-        itemGrid[available[i]] = code;
+
+        const cluster = [];
+        for (let i = 0; i < group.length; i += 1) {
+          const cell = cluster.length ? takeNear(cluster) : takeAny();
+          remaining.delete(cell);
+          cluster.push(cell);
+          itemGrid[cell] = code;
+        }
       }
 
       renderAllCells();
@@ -602,6 +743,7 @@
 
     function applyTool(index) {
       const tool = selectedTool;
+      clearSolution();
       if (tool.kind === "empty") {
         itemGrid[index] = 0;
       } else if (tool.kind === "item") {
@@ -620,6 +762,7 @@
     }
 
     function clearCell(index) {
+      clearSolution();
       itemGrid[index] = 0;
       renderAllCells();
       clearError();
@@ -704,6 +847,8 @@
       isMouseDown = false;
       activeMouseButton = -1;
     });
+
+    complexityEl.addEventListener("input", syncComplexityLabel);
 
     function clearError(msg = "") {
       errorEl.textContent = msg;
@@ -844,6 +989,7 @@
     decodeBtn.addEventListener("click", () => {
       try {
         decodeMap(encodedEl.value);
+        clearSolution();
         clearError();
       } catch (err) {
         clearError(err instanceof Error ? err.message : "Decode failed");
@@ -853,6 +999,7 @@
     clearBtn.addEventListener("click", () => {
       itemGrid.fill(0);
       setInitialInventoryFromMask(0);
+      clearSolution();
       renderAllCells();
       clearError();
     });
@@ -871,15 +1018,17 @@
           itemGrid[i] = selectedTool.itemCode;
         }
       }
+      clearSolution();
       renderAllCells();
       clearError();
     });
 
     generateBtn.addEventListener("click", () => {
       try {
-        const generated = generateMutationItems();
+        const plan = generateMutationPlan();
         itemGrid.fill(0);
-        placeGeneratedItemsRandom(generated);
+        placeGeneratedItemsRandom(plan.tokens);
+        renderSolution(plan);
         clearError();
       } catch (err) {
         clearError(err instanceof Error ? err.message : "Generate failed");
@@ -900,6 +1049,7 @@
     createGrid();
     createPalette();
     createInitialInventorySelector();
+    syncComplexityLabel();
     encodedEl.value = encodeMap();
   </script>
 </body>
